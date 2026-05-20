@@ -87,6 +87,26 @@ export default function ProjectsPanel() {
         className="flex-1 overflow-y-auto py-1"
         onDoubleClick={(e) => { if (e.target === e.currentTarget) startAdding() }}
       >
+        {addingNew && (
+          <div className="px-2 py-1">
+            <input
+              ref={inputRef}
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSubmit()
+                if (e.key === 'Escape') {
+                  setNewName('')
+                  setAddingNew(false)
+                }
+              }}
+              onBlur={handleSubmit}
+              placeholder="Project name…"
+              className="w-full text-sm px-2 py-1 rounded border border-blue-400 dark:border-blue-500 bg-white dark:bg-neutral-800 outline-none focus:ring-1 focus:ring-blue-400"
+            />
+          </div>
+        )}
+
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -118,26 +138,6 @@ export default function ProjectsPanel() {
           <p className="text-xs text-neutral-400 dark:text-neutral-500 px-3 py-2">
             No projects yet
           </p>
-        )}
-
-        {addingNew && (
-          <div className="px-2 py-1">
-            <input
-              ref={inputRef}
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') handleSubmit()
-                if (e.key === 'Escape') {
-                  setNewName('')
-                  setAddingNew(false)
-                }
-              }}
-              onBlur={handleSubmit}
-              placeholder="Project name…"
-              className="w-full text-sm px-2 py-1 rounded border border-blue-400 dark:border-blue-500 bg-white dark:bg-neutral-800 outline-none focus:ring-1 focus:ring-blue-400"
-            />
-          </div>
         )}
       </div>
     </div>

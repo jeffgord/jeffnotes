@@ -25,12 +25,12 @@ describe('Project actions', () => {
     expect(projects[0].order).toBe(0)
   })
 
-  it('adds multiple projects with incrementing order', () => {
+  it('adds multiple projects with newest at top', () => {
     store.getState().addProject('A')
     store.getState().addProject('B')
     const { projects } = store.getState()
     const sorted = [...projects].sort((a, b) => a.order - b.order)
-    expect(sorted.map((p) => p.name)).toEqual(['A', 'B'])
+    expect(sorted.map((p) => p.name)).toEqual(['B', 'A'])
   })
 
   it('updates project name', () => {
@@ -72,12 +72,13 @@ describe('Project actions', () => {
     store.getState().addProject('A')
     store.getState().addProject('B')
     store.getState().addProject('C')
-    const [a, b, c] = [...store.getState().projects].sort((x, y) => x.order - y.order)
+    // Newest first: C(0), B(1), A(2)
+    const [a, , c] = [...store.getState().projects].sort((x, y) => x.order - y.order)
     store.getState().reorderProjects(a.id, c.id)
     const reordered = [...store.getState().projects].sort((x, y) => x.order - y.order)
     expect(reordered[0].name).toBe('B')
-    expect(reordered[1].name).toBe('C')
-    expect(reordered[2].name).toBe('A')
+    expect(reordered[1].name).toBe('A')
+    expect(reordered[2].name).toBe('C')
   })
 
   it('updates project notes', () => {
@@ -148,12 +149,13 @@ describe('Todo actions', () => {
     store.getState().addTodo(projectId, 'A')
     store.getState().addTodo(projectId, 'B')
     store.getState().addTodo(projectId, 'C')
-    const [a, b, c] = [...store.getState().todos].sort((x, y) => x.order - y.order)
+    // Newest first: C(0), B(1), A(2)
+    const [a, , c] = [...store.getState().todos].sort((x, y) => x.order - y.order)
     store.getState().reorderTodos(a.id, c.id)
     const reordered = [...store.getState().todos].sort((x, y) => x.order - y.order)
     expect(reordered[0].text).toBe('B')
-    expect(reordered[1].text).toBe('C')
-    expect(reordered[2].text).toBe('A')
+    expect(reordered[1].text).toBe('A')
+    expect(reordered[2].text).toBe('C')
   })
 
   it('updates todo text', () => {
