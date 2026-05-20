@@ -27,8 +27,8 @@ const sampleState: PersistedState = {
   selectedProjectId: 'p1',
   selectedTodoId: 't1',
   theme: 'dark',
-  showArchivedProjects: true,
-  showCompletedTodos: false,
+  hideArchivedProjects: true,
+  hideCompletedTodos: false,
 }
 
 describe('exportStateToJson', () => {
@@ -42,8 +42,8 @@ describe('exportStateToJson', () => {
     expect(parsed).toHaveProperty('projects')
     expect(parsed).toHaveProperty('todos')
     expect(parsed).toHaveProperty('theme')
-    expect(parsed).toHaveProperty('showArchivedProjects')
-    expect(parsed).toHaveProperty('showCompletedTodos')
+    expect(parsed).toHaveProperty('hideArchivedProjects')
+    expect(parsed).toHaveProperty('hideCompletedTodos')
   })
 })
 
@@ -55,7 +55,7 @@ describe('importStateFromJson', () => {
     expect(imported.projects[0].name).toBe('Work')
     expect(imported.todos[0].text).toBe('Fix bug')
     expect(imported.theme).toBe('dark')
-    expect(imported.showArchivedProjects).toBe(true)
+    expect(imported.hideArchivedProjects).toBe(true)
   })
 
   it('throws on invalid JSON', () => {
@@ -77,6 +77,6 @@ describe('importStateFromJson', () => {
     const imported = importStateFromJson(minimal)
     expect(imported.theme).toBe('system')
     expect(imported.selectedProjectId).toBeNull()
-    expect(imported.showArchivedProjects).toBe(false)
+    expect(imported.hideArchivedProjects).toBe(false)
   })
 })

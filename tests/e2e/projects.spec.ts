@@ -32,14 +32,16 @@ test('selects a project', async ({ page }) => {
 test('archives and unarchives a project', async ({ page }) => {
   await addProject(page, 'Work')
 
-  // Archive via context menu
+  // Archive via context menu — project stays visible at bottom with strikethrough
   await page.getByTestId('project-item').click({ button: 'right' })
   await page.getByTestId('context-menu').getByText('Archive').click()
+  await expect(page.getByText('Work')).toBeVisible()
 
-  // Project disappears (archived hidden by default)
+  // Hide archived — project disappears
+  await page.getByTitle('Hide archived').click()
   await expect(page.getByText('Work')).not.toBeVisible()
 
-  // Show archived
+  // Show archived again
   await page.getByTitle('Show archived').click()
   await expect(page.getByText('Work')).toBeVisible()
 
@@ -47,7 +49,7 @@ test('archives and unarchives a project', async ({ page }) => {
   await page.getByTestId('project-item').click({ button: 'right' })
   await page.getByTestId('context-menu').getByText('Unarchive').click()
 
-  // Hide archived — project still visible (no longer archived)
+  // Now hiding archived still shows it (it's no longer archived)
   await page.getByTitle('Hide archived').click()
   await expect(page.getByText('Work')).toBeVisible()
 })
@@ -68,8 +70,8 @@ test('deletes a project with confirmation', async ({ page }) => {
   await page.getByTestId('project-item').click({ button: 'right' })
   await page.getByTestId('context-menu').getByText('Archive').click()
 
-  // Show archived to access the project
-  await page.getByTitle('Show archived').click()
+  // Project is still visible (archived shown by default)
+  await expect(page.getByTestId('project-item')).toHaveCount(1)
 
   // Cancel — project stays
   await page.getByTestId('project-item').click({ button: 'right' })

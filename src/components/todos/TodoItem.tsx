@@ -75,15 +75,17 @@ export default function TodoItem({ todo, isSelected }: Props) {
         >
           {todo.text}
         </span>
-        <button
-          {...attributes}
-          {...listeners}
-          className="text-neutral-300 hover:text-neutral-500 dark:text-neutral-600 dark:hover:text-neutral-400 shrink-0 cursor-grab active:cursor-grabbing"
-          onClick={(e) => e.stopPropagation()}
-          tabIndex={-1}
-        >
-          <GripVertical size={14} />
-        </button>
+        {!todo.completed && (
+          <button
+            {...attributes}
+            {...listeners}
+            className="text-neutral-300 hover:text-neutral-500 dark:text-neutral-600 dark:hover:text-neutral-400 shrink-0 cursor-grab active:cursor-grabbing"
+            onClick={(e) => e.stopPropagation()}
+            tabIndex={-1}
+          >
+            <GripVertical size={14} />
+          </button>
+        )}
       </div>
 
       {menuPos && (

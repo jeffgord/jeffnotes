@@ -27,10 +27,10 @@ export default function TodosPanel() {
     todos,
     selectedProjectId,
     selectedTodoId,
-    showCompletedTodos,
+    hideCompletedTodos,
     addTodo,
     reorderTodos,
-    toggleShowCompleted,
+    toggleHideCompleted,
   } = useStore()
 
   const sensors = useSensors(
@@ -73,9 +73,8 @@ export default function TodosPanel() {
   const projectTodos = todos
     .filter((t) => t.projectId === selectedProjectId)
     .sort((a, b) => a.order - b.order)
-  const visible = showCompletedTodos
-    ? projectTodos.filter((t) => t.completed)
-    : projectTodos.filter((t) => !t.completed)
+  const activeTodos = projectTodos.filter((t) => !t.completed)
+  const completedTodos = projectTodos.filter((t) => t.completed)
 
   return (
     <div className="flex flex-col h-full">
@@ -84,14 +83,14 @@ export default function TodosPanel() {
           className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400 truncate"
           title={selectedProject?.name}
         >
-          {selectedProject?.name ?? 'Todos'}{showCompletedTodos && <span className="normal-case font-normal tracking-normal ml-1">(completed)</span>}
+          {selectedProject?.name ?? 'Todos'}
         </span>
         <div className="flex items-center gap-1 shrink-0">
           <button
-            title={showCompletedTodos ? 'Hide completed' : 'Show completed'}
-            onClick={toggleShowCompleted}
+            title={hideCompletedTodos ? 'Show completed' : 'Hide completed'}
+            onClick={toggleHideCompleted}
             className={`p-1 rounded transition-colors ${
-              showCompletedTodos
+              hideCompletedTodos
                 ? 'text-blue-600 dark:text-blue-400'
                 : 'text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300'
             }`}
@@ -112,10 +111,10 @@ export default function TodosPanel() {
           onDragEnd={handleDragEnd}
         >
           <SortableContext
-            items={visible.map((t) => t.id)}
+            items={activeTodos.map((t) => t.id)}
             strategy={verticalListSortingStrategy}
           >
-            {visible.map((todo) => (
+            {activeTodos.map((todo) => (
               <TodoItem
                 key={todo.id}
                 todo={todo}
@@ -125,9 +124,17 @@ export default function TodosPanel() {
           </SortableContext>
         </DndContext>
 
-        {visible.length === 0 && !addingNew && (
+        {!hideCompletedTodos && completedTodos.map((todo) => (
+          <TodoItem
+            key={todo.id}
+            todo={todo}
+            isSelected={todo.id === selectedTodoId}
+          />
+        ))}
+
+        {activeTodos.length === 0 && completedTodos.length === 0 && !addingNew && (
           <p className="text-xs text-neutral-400 dark:text-neutral-500 px-3 py-2">
-            {showCompletedTodos ? 'No completed todos' : 'No todos yet'}
+            No todos yet
           </p>
         )}
 

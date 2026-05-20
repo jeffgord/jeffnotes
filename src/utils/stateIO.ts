@@ -7,8 +7,8 @@ export function exportStateToJson(state: PersistedState): string {
     selectedProjectId: state.selectedProjectId,
     selectedTodoId: state.selectedTodoId,
     theme: state.theme,
-    showArchivedProjects: state.showArchivedProjects,
-    showCompletedTodos: state.showCompletedTodos,
+    hideArchivedProjects: state.hideArchivedProjects,
+    hideCompletedTodos: state.hideCompletedTodos,
   }
   return JSON.stringify(exportable, null, 2)
 }
@@ -39,8 +39,8 @@ export function importStateFromJson(json: string): PersistedState {
       typeof obj.selectedTodoId === 'string' ? obj.selectedTodoId : null,
     theme:
       obj.theme === 'light' || obj.theme === 'dark' ? obj.theme : 'system',
-    showArchivedProjects: obj.showArchivedProjects === true,
-    showCompletedTodos: obj.showCompletedTodos === true,
+    hideArchivedProjects: obj.hideArchivedProjects === true,
+    hideCompletedTodos: obj.hideCompletedTodos === true,
   }
 }
 

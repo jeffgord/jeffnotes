@@ -15,8 +15,8 @@ export default function Header() {
       selectedProjectId: state.selectedProjectId,
       selectedTodoId: state.selectedTodoId,
       theme,
-      showArchivedProjects: state.showArchivedProjects,
-      showCompletedTodos: state.showCompletedTodos,
+      hideArchivedProjects: state.hideArchivedProjects,
+      hideCompletedTodos: state.hideCompletedTodos,
     })
     const date = new Date().toISOString().slice(0, 10)
     downloadJson(json, `jeffnotes-backup-${date}.json`)

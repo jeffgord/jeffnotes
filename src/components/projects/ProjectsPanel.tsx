@@ -25,10 +25,10 @@ export default function ProjectsPanel() {
   const {
     projects,
     selectedProjectId,
-    showArchivedProjects,
+    hideArchivedProjects,
     addProject,
     reorderProjects,
-    toggleShowArchived,
+    toggleHideArchived,
   } = useStore()
 
   const sensors = useSensors(
@@ -58,22 +58,21 @@ export default function ProjectsPanel() {
   }
 
   const sorted = [...projects].sort((a, b) => a.order - b.order)
-  const visible = showArchivedProjects
-    ? sorted.filter((p) => p.archived)
-    : sorted.filter((p) => !p.archived)
+  const activeProjects = sorted.filter((p) => !p.archived)
+  const archivedProjects = sorted.filter((p) => p.archived)
 
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between px-3 py-2 border-b border-neutral-200 dark:border-neutral-700 shrink-0">
         <span className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
-          Projects{showArchivedProjects && <span className="normal-case font-normal tracking-normal ml-1">(archived)</span>}
+          Projects
         </span>
         <div className="flex items-center gap-1">
           <button
-            title={showArchivedProjects ? 'Hide archived' : 'Show archived'}
-            onClick={toggleShowArchived}
+            title={hideArchivedProjects ? 'Show archived' : 'Hide archived'}
+            onClick={toggleHideArchived}
             className={`p-1 rounded transition-colors ${
-              showArchivedProjects
+              hideArchivedProjects
                 ? 'text-blue-600 dark:text-blue-400'
                 : 'text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300'
             }`}
@@ -94,10 +93,10 @@ export default function ProjectsPanel() {
           onDragEnd={handleDragEnd}
         >
           <SortableContext
-            items={visible.map((p) => p.id)}
+            items={activeProjects.map((p) => p.id)}
             strategy={verticalListSortingStrategy}
           >
-            {visible.map((project) => (
+            {activeProjects.map((project) => (
               <ProjectItem
                 key={project.id}
                 project={project}
@@ -107,9 +106,17 @@ export default function ProjectsPanel() {
           </SortableContext>
         </DndContext>
 
-        {visible.length === 0 && !addingNew && (
+        {!hideArchivedProjects && archivedProjects.map((project) => (
+          <ProjectItem
+            key={project.id}
+            project={project}
+            isSelected={project.id === selectedProjectId}
+          />
+        ))}
+
+        {activeProjects.length === 0 && archivedProjects.length === 0 && !addingNew && (
           <p className="text-xs text-neutral-400 dark:text-neutral-500 px-3 py-2">
-            {showArchivedProjects ? 'No archived projects' : 'No projects yet'}
+            No projects yet
           </p>
         )}
 

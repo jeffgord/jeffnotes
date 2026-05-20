@@ -25,6 +25,6 @@ export interface PersistedState {
   selectedProjectId: string | null
   selectedTodoId: string | null
   theme: Theme
-  showArchivedProjects: boolean
-  showCompletedTodos: boolean
+  hideArchivedProjects: boolean
+  hideCompletedTodos: boolean
 }

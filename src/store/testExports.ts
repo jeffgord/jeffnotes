@@ -20,8 +20,8 @@ export interface AppStore extends PersistedState {
   updateTodoNotes: (id: string, notes: string) => void
   setSelectedTodo: (id: string | null) => void
   setTheme: (theme: Theme) => void
-  toggleShowArchived: () => void
-  toggleShowCompleted: () => void
+  toggleHideArchived: () => void
+  toggleHideCompleted: () => void
   loadState: (state: PersistedState) => void
 }
 
@@ -31,8 +31,8 @@ export const buildStoreState: StateCreator<AppStore> = (set, get) => ({
   selectedProjectId: null,
   selectedTodoId: null,
   theme: 'system',
-  showArchivedProjects: false,
-  showCompletedTodos: false,
+  hideArchivedProjects: false,
+  hideCompletedTodos: false,
 
   addProject: (name) => {
     const projects = get().projects
@@ -86,14 +86,18 @@ export const buildStoreState: StateCreator<AppStore> = (set, get) => ({
     })),
 
   reorderProjects: (activeId, overId) => {
-    const projects = [...get().projects].sort((a: Project, b: Project) => a.order - b.order)
-    const activeIdx = projects.findIndex((p: Project) => p.id === activeId)
-    const overIdx = projects.findIndex((p: Project) => p.id === overId)
+    const all = get().projects
+    const active = [...all.filter((p: Project) => !p.archived)].sort(
+      (a: Project, b: Project) => a.order - b.order
+    )
+    const activeIdx = active.findIndex((p: Project) => p.id === activeId)
+    const overIdx = active.findIndex((p: Project) => p.id === overId)
     if (activeIdx === -1 || overIdx === -1) return
-    const reordered = [...projects]
+    const reordered = [...active]
     const [moved] = reordered.splice(activeIdx, 1)
     reordered.splice(overIdx, 0, moved)
-    set({ projects: reordered.map((p: Project, i: number) => ({ ...p, order: i })) })
+    const withOrder = reordered.map((p: Project, i: number) => ({ ...p, order: i }))
+    set({ projects: all.map((p: Project) => withOrder.find((r) => r.id === p.id) ?? p) })
   },
 
   updateProjectNotes: (id, notes) =>
@@ -137,7 +141,6 @@ export const buildStoreState: StateCreator<AppStore> = (set, get) => ({
       todos: s.todos.map((t: Todo) =>
         t.id === id ? { ...t, completed: true } : t
       ),
-      selectedTodoId: s.selectedTodoId === id ? null : s.selectedTodoId,
     })),
 
   uncompleteTodo: (id) =>
@@ -157,19 +160,17 @@ export const buildStoreState: StateCreator<AppStore> = (set, get) => ({
     const projectId = get().todos.find((t: Todo) => t.id === activeId)?.projectId
     if (!projectId) return
     const all = get().todos
-    const projectTodos = [...all.filter((t: Todo) => t.projectId === projectId)].sort(
+    const active = [...all.filter((t: Todo) => t.projectId === projectId && !t.completed)].sort(
       (a: Todo, b: Todo) => a.order - b.order
     )
-    const activeIdx = projectTodos.findIndex((t: Todo) => t.id === activeId)
-    const overIdx = projectTodos.findIndex((t: Todo) => t.id === overId)
+    const activeIdx = active.findIndex((t: Todo) => t.id === activeId)
+    const overIdx = active.findIndex((t: Todo) => t.id === overId)
     if (activeIdx === -1 || overIdx === -1) return
-    const reordered = [...projectTodos]
+    const reordered = [...active]
     const [moved] = reordered.splice(activeIdx, 1)
     reordered.splice(overIdx, 0, moved)
     const withOrder = reordered.map((t: Todo, i: number) => ({ ...t, order: i }))
-    set({
-      todos: all.map((t: Todo) => withOrder.find((r: Todo) => r.id === t.id) ?? t),
-    })
+    set({ todos: all.map((t: Todo) => withOrder.find((r) => r.id === t.id) ?? t) })
   },
 
   updateTodoNotes: (id, notes) =>
@@ -180,10 +181,10 @@ export const buildStoreState: StateCreator<AppStore> = (set, get) => ({
   setSelectedTodo: (id) => set({ selectedTodoId: id }),
 
   setTheme: (theme) => set({ theme }),
-  toggleShowArchived: () =>
-    set((s) => ({ showArchivedProjects: !s.showArchivedProjects })),
-  toggleShowCompleted: () =>
-    set((s) => ({ showCompletedTodos: !s.showCompletedTodos })),
+  toggleHideArchived: () =>
+    set((s) => ({ hideArchivedProjects: !s.hideArchivedProjects })),
+  toggleHideCompleted: () =>
+    set((s) => ({ hideCompletedTodos: !s.hideCompletedTodos })),
 
   loadState: (state) => set(state),
 })

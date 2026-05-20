@@ -40,19 +40,22 @@ test('adds a todo', async ({ page }) => {
 test('completes and uncompletes a todo', async ({ page }) => {
   await addTodo(page, 'Task')
 
-  // Complete — todo disappears from default (active) view
+  // Complete — todo stays visible at bottom with strikethrough
   await page.getByTestId('todo-item').getByTestId('todo-checkbox').click()
+  await expect(page.getByText('Task')).toBeVisible()
+
+  // Hide completed — todo disappears
+  await page.getByTitle('Hide completed').click()
   await expect(page.getByText('Task')).not.toBeVisible()
 
-  // Show completed — now shows ONLY completed todos
+  // Show completed again
   await page.getByTitle('Show completed').click()
   await expect(page.getByText('Task')).toBeVisible()
 
-  // Uncomplete — todo disappears from completed-only view
+  // Uncomplete — moves back to active section
   await page.getByTestId('todo-item').getByTestId('todo-checkbox').click()
-  await expect(page.getByText('Task')).not.toBeVisible()
 
-  // Back to active view — todo is visible again
+  // Now hiding completed still shows it (no longer completed)
   await page.getByTitle('Hide completed').click()
   await expect(page.getByText('Task')).toBeVisible()
 })
@@ -72,8 +75,8 @@ test('deletes a todo with confirmation', async ({ page }) => {
   // Must complete first — delete is only available on completed todos
   await page.getByTestId('todo-item').getByTestId('todo-checkbox').click()
 
-  // Show completed to access the todo
-  await page.getByTitle('Show completed').click()
+  // Todo is still visible (completed shown by default)
+  await expect(page.getByTestId('todo-item')).toHaveCount(1)
 
   // Cancel — todo stays
   await page.getByTestId('todo-item').click({ button: 'right' })

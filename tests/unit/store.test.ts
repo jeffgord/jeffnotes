@@ -68,7 +68,7 @@ describe('Project actions', () => {
     expect(store.getState().selectedProjectId).toBeNull()
   })
 
-  it('reorders projects', () => {
+  it('reorders projects (only among active)', () => {
     store.getState().addProject('A')
     store.getState().addProject('B')
     store.getState().addProject('C')
@@ -144,7 +144,7 @@ describe('Todo actions', () => {
     expect(store.getState().selectedTodoId).toBeNull()
   })
 
-  it('reorders todos', () => {
+  it('reorders todos (only among active)', () => {
     store.getState().addTodo(projectId, 'A')
     store.getState().addTodo(projectId, 'B')
     store.getState().addTodo(projectId, 'C')
@@ -186,16 +186,16 @@ describe('UI actions', () => {
     expect(store.getState().theme).toBe('light')
   })
 
-  it('toggles show archived', () => {
-    expect(store.getState().showArchivedProjects).toBe(false)
-    store.getState().toggleShowArchived()
-    expect(store.getState().showArchivedProjects).toBe(true)
+  it('toggles hide archived', () => {
+    expect(store.getState().hideArchivedProjects).toBe(false)
+    store.getState().toggleHideArchived()
+    expect(store.getState().hideArchivedProjects).toBe(true)
   })
 
-  it('toggles show completed', () => {
-    expect(store.getState().showCompletedTodos).toBe(false)
-    store.getState().toggleShowCompleted()
-    expect(store.getState().showCompletedTodos).toBe(true)
+  it('toggles hide completed', () => {
+    expect(store.getState().hideCompletedTodos).toBe(false)
+    store.getState().toggleHideCompleted()
+    expect(store.getState().hideCompletedTodos).toBe(true)
   })
 })
 
@@ -210,8 +210,8 @@ describe('loadState', () => {
       selectedProjectId: null,
       selectedTodoId: null,
       theme: 'dark' as const,
-      showArchivedProjects: true,
-      showCompletedTodos: false,
+      hideArchivedProjects: true,
+      hideCompletedTodos: false,
     }
     store.getState().loadState(newState)
 
@@ -219,6 +219,6 @@ describe('loadState', () => {
     expect(s.projects).toHaveLength(1)
     expect(s.projects[0].name).toBe('Imported')
     expect(s.theme).toBe('dark')
-    expect(s.showArchivedProjects).toBe(true)
+    expect(s.hideArchivedProjects).toBe(true)
   })
 })
