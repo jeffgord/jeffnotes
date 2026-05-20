@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { GripVertical, Archive, ArchiveRestore, Trash2 } from 'lucide-react'
+import { GripVertical } from 'lucide-react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useStore } from '../../store'
 import ConfirmDialog from '../ui/ConfirmDialog'
+import ContextMenu from '../ui/ContextMenu'
 import type { Project } from '../../types'
 
 interface Props {
@@ -13,17 +14,11 @@ interface Props {
 
 export default function ProjectItem({ project, isSelected }: Props) {
   const [confirmDelete, setConfirmDelete] = useState(false)
-  const { archiveProject, unarchiveProject, deleteProject, setSelectedProject } =
-    useStore()
+  const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null)
+  const { archiveProject, unarchiveProject, deleteProject, setSelectedProject } = useStore()
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: project.id })
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: project.id })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -31,18 +26,29 @@ export default function ProjectItem({ project, isSelected }: Props) {
     opacity: isDragging ? 0.4 : undefined,
   }
 
+  const menuItems = project.archived
+    ? [
+        { label: 'Unarchive', onClick: () => unarchiveProject(project.id) },
+        { label: 'Delete', onClick: () => setConfirmDelete(true), danger: true as const },
+      ]
+    : [{ label: 'Archive', onClick: () => archiveProject(project.id) }]
+
   return (
     <>
       <div
         ref={setNodeRef}
         style={style}
         data-testid="project-item"
-        className={`group flex items-center gap-1 px-2 py-1.5 cursor-pointer select-none rounded mx-1 my-0.5 text-sm ${
+        className={`flex items-center gap-1 px-2 py-1.5 cursor-pointer select-none rounded mx-1 my-0.5 text-sm ${
           isSelected
             ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-900 dark:text-blue-100'
             : 'hover:bg-neutral-100 dark:hover:bg-neutral-800'
-        } ${project.archived ? 'opacity-60' : ''}`}
+        }`}
         onClick={() => setSelectedProject(isSelected ? null : project.id)}
+        onContextMenu={(e) => {
+          e.preventDefault()
+          setMenuPos({ x: e.clientX, y: e.clientY })
+        }}
       >
         <button
           {...attributes}
@@ -54,45 +60,21 @@ export default function ProjectItem({ project, isSelected }: Props) {
           <GripVertical size={14} />
         </button>
         <span className="flex-1 truncate">{project.name}</span>
-        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-          {!project.archived && (
-            <button
-              title="Archive"
-              onClick={(e) => {
-                e.stopPropagation()
-                archiveProject(project.id)
-              }}
-              className="p-0.5 rounded text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200"
-            >
-              <Archive size={13} />
-            </button>
-          )}
-          {project.archived && (
-            <>
-              <button
-                title="Unarchive"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  unarchiveProject(project.id)
-                }}
-                className="p-0.5 rounded text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200"
-              >
-                <ArchiveRestore size={13} />
-              </button>
-              <button
-                title="Delete project"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setConfirmDelete(true)
-                }}
-                className="p-0.5 rounded text-neutral-400 hover:text-red-600 dark:hover:text-red-400"
-              >
-                <Trash2 size={13} />
-              </button>
-            </>
-          )}
-        </div>
+        {project.archived && (
+          <span className="text-xs text-neutral-400 dark:text-neutral-500 shrink-0 ml-1">
+            (archived)
+          </span>
+        )}
       </div>
+
+      {menuPos && (
+        <ContextMenu
+          x={menuPos.x}
+          y={menuPos.y}
+          items={menuItems}
+          onClose={() => setMenuPos(null)}
+        />
+      )}
 
       {confirmDelete && (
         <ConfirmDialog

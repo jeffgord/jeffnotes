@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Plus, Eye } from 'lucide-react'
+import { Eye } from 'lucide-react'
 import {
   DndContext,
   closestCenter,
@@ -98,17 +98,11 @@ export default function TodosPanel() {
           >
             <Eye size={14} />
           </button>
-          <button
-            title="Add todo"
-            onClick={startAdding}
-            className="p-1 rounded text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
-          >
-            <Plus size={14} />
-          </button>
         </div>
       </div>
 
       <div
+        data-testid="todos-list"
         className="flex-1 overflow-y-auto py-1"
         onDoubleClick={(e) => { if (e.target === e.currentTarget) startAdding() }}
       >

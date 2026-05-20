@@ -38,15 +38,16 @@ src/
   components/
     Header.tsx            — App title, theme toggle, import/export buttons
     projects/
-      ProjectsPanel.tsx   — DndContext + SortableContext list, add form, archive toggle
-      ProjectItem.tsx     — Sortable row: drag handle, select, archive, delete
+      ProjectsPanel.tsx   — DndContext + SortableContext list, add form (dbl-click), archive toggle
+      ProjectItem.tsx     — Sortable row: drag handle, select, right-click context menu
     todos/
-      TodosPanel.tsx      — DndContext list, add form, completed toggle
-      TodoItem.tsx        — Sortable row: drag handle, checkbox, delete
+      TodosPanel.tsx      — DndContext list, add form (dbl-click), completed toggle
+      TodoItem.tsx        — Sortable row: drag handle, checkbox, right-click context menu (completed only)
     notes/
       NotesPanel.tsx      — Two textareas: project notes (top) + todo notes (bottom)
     ui/
       ConfirmDialog.tsx   — Reusable modal confirmation (data-testid="confirm-delete-btn")
+      ContextMenu.tsx     — Right-click context menu (data-testid="context-menu")
 tests/
   unit/
     store.test.ts         — All store actions via in-memory stores (no persist middleware)
@@ -82,4 +83,6 @@ Dark mode applied by toggling the `.dark` class on `<html>` in `App.tsx`. Tailwi
 - **Write or update tests** whenever you change store actions or add new UI flows — do this proactively without waiting to be asked. Unit tests live in `tests/unit/`, e2e in `tests/e2e/`. Every new user interaction (click, double-click, keyboard shortcut, etc.) needs an e2e test.
 - Unit tests create fresh in-memory stores via `buildStoreState` from `src/store/testExports.ts` — no localStorage involved.
 - E2e tests call `localStorage.clear()` + `page.reload()` in `beforeEach` for isolation.
+- E2e test files use local `addProject`/`addTodo` helpers that dblclick near the bottom of the list area (`data-testid="projects-list"` / `"todos-list"`) to avoid hitting existing items.
+- Item actions (archive/unarchive/delete) are triggered via right-click context menu — use `click({ button: 'right' })` + `getByTestId('context-menu').getByText(...)` in tests.
 - Tailwind v4 uses `@tailwindcss/vite` plugin (not PostCSS). No `tailwind.config.js` needed.

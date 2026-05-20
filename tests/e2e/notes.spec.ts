@@ -1,4 +1,20 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
+
+async function addProject(page: Page, name: string) {
+  const list = page.getByTestId('projects-list')
+  const box = await list.boundingBox()
+  await page.mouse.dblclick(box!.x + box!.width / 2, box!.y + box!.height - 20)
+  await page.getByPlaceholder('Project name…').fill(name)
+  await page.keyboard.press('Enter')
+}
+
+async function addTodo(page: Page, text: string) {
+  const list = page.getByTestId('todos-list')
+  const box = await list.boundingBox()
+  await page.mouse.dblclick(box!.x + box!.width / 2, box!.y + box!.height - 20)
+  await page.getByPlaceholder('New todo…').fill(text)
+  await page.keyboard.press('Enter')
+}
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
@@ -12,23 +28,14 @@ test('project notes textarea is disabled when no project selected', async ({ pag
 })
 
 test('project notes persist across todo selections', async ({ page }) => {
-  // Create project + select it
-  await page.getByTitle('Add project').click()
-  await page.getByPlaceholder('Project name…').fill('Work')
-  await page.keyboard.press('Enter')
+  await addProject(page, 'Work')
   await page.getByText('Work').click()
 
-  // Type project notes
   const projectNotes = page.locator('textarea').first()
   await projectNotes.fill('These are project notes')
 
-  // Add two todos and switch between them
-  await page.getByTitle('Add todo').click()
-  await page.getByPlaceholder('New todo…').fill('Todo A')
-  await page.keyboard.press('Enter')
-  await page.getByTitle('Add todo').click()
-  await page.getByPlaceholder('New todo…').fill('Todo B')
-  await page.keyboard.press('Enter')
+  await addTodo(page, 'Todo A')
+  await addTodo(page, 'Todo B')
 
   await page.getByText('Todo A').click()
   await expect(page.locator('textarea').first()).toHaveValue('These are project notes')
@@ -38,17 +45,11 @@ test('project notes persist across todo selections', async ({ page }) => {
 })
 
 test('todo notes are per-todo', async ({ page }) => {
-  await page.getByTitle('Add project').click()
-  await page.getByPlaceholder('Project name…').fill('Work')
-  await page.keyboard.press('Enter')
+  await addProject(page, 'Work')
   await page.getByText('Work').click()
 
-  await page.getByTitle('Add todo').click()
-  await page.getByPlaceholder('New todo…').fill('Todo A')
-  await page.keyboard.press('Enter')
-  await page.getByTitle('Add todo').click()
-  await page.getByPlaceholder('New todo…').fill('Todo B')
-  await page.keyboard.press('Enter')
+  await addTodo(page, 'Todo A')
+  await addTodo(page, 'Todo B')
 
   // Write notes for Todo A
   await page.getByTestId('todo-item').filter({ hasText: 'Todo A' }).click()
@@ -65,9 +66,7 @@ test('todo notes are per-todo', async ({ page }) => {
 })
 
 test('todo notes textarea is disabled when no todo selected', async ({ page }) => {
-  await page.getByTitle('Add project').click()
-  await page.getByPlaceholder('Project name…').fill('Work')
-  await page.keyboard.press('Enter')
+  await addProject(page, 'Work')
   await page.getByText('Work').click()
 
   const todoNotes = page.locator('textarea').last()

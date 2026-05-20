@@ -1,14 +1,27 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
+
+async function addProject(page: Page, name: string) {
+  const list = page.getByTestId('projects-list')
+  const box = await list.boundingBox()
+  await page.mouse.dblclick(box!.x + box!.width / 2, box!.y + box!.height - 20)
+  await page.getByPlaceholder('Project name…').fill(name)
+  await page.keyboard.press('Enter')
+}
+
+async function addTodo(page: Page, text: string) {
+  const list = page.getByTestId('todos-list')
+  const box = await list.boundingBox()
+  await page.mouse.dblclick(box!.x + box!.width / 2, box!.y + box!.height - 20)
+  await page.getByPlaceholder('New todo…').fill(text)
+  await page.keyboard.press('Enter')
+}
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
   await page.evaluate(() => localStorage.clear())
   await page.reload()
 
-  // Create a project to work with
-  await page.getByTitle('Add project').click()
-  await page.getByPlaceholder('Project name…').fill('My Project')
-  await page.keyboard.press('Enter')
+  await addProject(page, 'My Project')
   await page.getByText('My Project').click()
 })
 
@@ -20,16 +33,12 @@ test('shows prompt when no project selected', async ({ page }) => {
 })
 
 test('adds a todo', async ({ page }) => {
-  await page.getByTitle('Add todo').click()
-  await page.getByPlaceholder('New todo…').fill('Fix bug')
-  await page.keyboard.press('Enter')
+  await addTodo(page, 'Fix bug')
   await expect(page.getByText('Fix bug')).toBeVisible()
 })
 
 test('completes and uncompletes a todo', async ({ page }) => {
-  await page.getByTitle('Add todo').click()
-  await page.getByPlaceholder('New todo…').fill('Task')
-  await page.keyboard.press('Enter')
+  await addTodo(page, 'Task')
 
   // Complete — todo disappears from default (active) view
   await page.getByTestId('todo-item').getByRole('checkbox').click()
@@ -49,8 +58,7 @@ test('completes and uncompletes a todo', async ({ page }) => {
 })
 
 test('double-click on empty space opens add input', async ({ page }) => {
-  // The todos panel is the second .flex-1.overflow-y-auto column
-  await page.locator('.flex-1.overflow-y-auto').nth(1).dblclick()
+  await page.getByTestId('todos-list').dblclick()
   await expect(page.getByPlaceholder('New todo…')).toBeVisible()
 
   await page.getByPlaceholder('New todo…').fill('Dbl todo')
@@ -59,9 +67,7 @@ test('double-click on empty space opens add input', async ({ page }) => {
 })
 
 test('deletes a todo with confirmation', async ({ page }) => {
-  await page.getByTitle('Add todo').click()
-  await page.getByPlaceholder('New todo…').fill('Temp todo')
-  await page.keyboard.press('Enter')
+  await addTodo(page, 'Temp todo')
 
   // Must complete first — delete is only available on completed todos
   await page.getByTestId('todo-item').getByRole('checkbox').click()
@@ -70,15 +76,15 @@ test('deletes a todo with confirmation', async ({ page }) => {
   await page.getByTitle('Show completed').click()
 
   // Cancel — todo stays
-  await page.getByTestId('todo-item').hover()
-  await page.getByTitle('Delete todo').click()
+  await page.getByTestId('todo-item').click({ button: 'right' })
+  await page.getByTestId('context-menu').getByText('Delete').click()
   await expect(page.getByText(/cannot be undone/i)).toBeVisible()
   await page.getByRole('button', { name: 'Cancel' }).click()
   await expect(page.getByTestId('todo-item')).toHaveCount(1)
 
   // Delete for real
-  await page.getByTestId('todo-item').hover()
-  await page.getByTitle('Delete todo').click()
+  await page.getByTestId('todo-item').click({ button: 'right' })
+  await page.getByTestId('context-menu').getByText('Delete').click()
   await page.getByTestId('confirm-delete-btn').click()
   await expect(page.getByTestId('todo-item')).toHaveCount(0)
 })
