@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Plus, Eye, EyeOff } from 'lucide-react'
+import { Plus, Eye } from 'lucide-react'
 import {
   DndContext,
   closestCenter,
@@ -58,7 +58,9 @@ export default function ProjectsPanel() {
   }
 
   const sorted = [...projects].sort((a, b) => a.order - b.order)
-  const visible = sorted.filter((p) => showArchivedProjects || !p.archived)
+  const visible = showArchivedProjects
+    ? sorted.filter((p) => p.archived)
+    : sorted.filter((p) => !p.archived)
 
   return (
     <div className="flex flex-col h-full">
@@ -76,7 +78,7 @@ export default function ProjectsPanel() {
                 : 'text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300'
             }`}
           >
-            {showArchivedProjects ? <EyeOff size={14} /> : <Eye size={14} />}
+            <Eye size={14} />
           </button>
           <button
             title="Add project"
@@ -113,7 +115,7 @@ export default function ProjectsPanel() {
 
         {visible.length === 0 && !addingNew && (
           <p className="text-xs text-neutral-400 dark:text-neutral-500 px-3 py-2">
-            No projects yet
+            {showArchivedProjects ? 'No archived projects' : 'No projects yet'}
           </p>
         )}
 

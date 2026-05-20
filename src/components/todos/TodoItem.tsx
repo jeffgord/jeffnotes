@@ -69,16 +69,18 @@ export default function TodoItem({ todo, isSelected }: Props) {
         >
           {todo.text}
         </span>
-        <button
-          title="Delete todo"
-          onClick={(e) => {
-            e.stopPropagation()
-            setConfirmDelete(true)
-          }}
-          className="p-0.5 rounded text-neutral-400 hover:text-red-600 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
-        >
-          <Trash2 size={13} />
-        </button>
+        {todo.completed && (
+          <button
+            title="Delete todo"
+            onClick={(e) => {
+              e.stopPropagation()
+              setConfirmDelete(true)
+            }}
+            className="p-0.5 rounded text-neutral-400 hover:text-red-600 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <Trash2 size={13} />
+          </button>
+        )}
       </div>
 
       {confirmDelete && (

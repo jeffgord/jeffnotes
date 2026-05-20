@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Plus, Eye, EyeOff } from 'lucide-react'
+import { Plus, Eye } from 'lucide-react'
 import {
   DndContext,
   closestCenter,
@@ -73,7 +73,9 @@ export default function TodosPanel() {
   const projectTodos = todos
     .filter((t) => t.projectId === selectedProjectId)
     .sort((a, b) => a.order - b.order)
-  const visible = projectTodos.filter((t) => showCompletedTodos || !t.completed)
+  const visible = showCompletedTodos
+    ? projectTodos.filter((t) => t.completed)
+    : projectTodos.filter((t) => !t.completed)
 
   return (
     <div className="flex flex-col h-full">
@@ -94,7 +96,7 @@ export default function TodosPanel() {
                 : 'text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300'
             }`}
           >
-            {showCompletedTodos ? <EyeOff size={14} /> : <Eye size={14} />}
+            <Eye size={14} />
           </button>
           <button
             title="Add todo"
@@ -131,7 +133,7 @@ export default function TodosPanel() {
 
         {visible.length === 0 && !addingNew && (
           <p className="text-xs text-neutral-400 dark:text-neutral-500 px-3 py-2">
-            No todos yet
+            {showCompletedTodos ? 'No completed todos' : 'No todos yet'}
           </p>
         )}
 

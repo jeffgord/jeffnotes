@@ -66,13 +66,17 @@ test('deletes a project with confirmation', async ({ page }) => {
   await page.getByPlaceholder('Project name…').fill('Temp')
   await page.keyboard.press('Enter')
 
+  // Must archive first — delete is only available on archived projects
   await page.getByTestId('project-item').hover()
-  await page.getByTitle('Delete project').click()
+  await page.getByTitle('Archive', { exact: true }).click()
 
-  // Confirmation dialog should appear
-  await expect(page.getByText(/cannot be undone/i)).toBeVisible()
+  // Show archived to access the project
+  await page.getByTitle('Show archived').click()
 
   // Cancel — project stays
+  await page.getByTestId('project-item').hover()
+  await page.getByTitle('Delete project').click()
+  await expect(page.getByText(/cannot be undone/i)).toBeVisible()
   await page.getByRole('button', { name: 'Cancel' }).click()
   await expect(page.getByTestId('project-item')).toHaveCount(1)
 

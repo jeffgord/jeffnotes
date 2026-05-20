@@ -31,18 +31,20 @@ test('completes and uncompletes a todo', async ({ page }) => {
   await page.getByPlaceholder('New todo…').fill('Task')
   await page.keyboard.press('Enter')
 
-  // Click the checkbox (use click not check — item disappears after completing)
+  // Complete — todo disappears from default (active) view
   await page.getByTestId('todo-item').getByRole('checkbox').click()
-
-  // Todo disappears (completed hidden by default)
   await expect(page.getByText('Task')).not.toBeVisible()
 
-  // Show completed
+  // Show completed — now shows ONLY completed todos
   await page.getByTitle('Show completed').click()
   await expect(page.getByText('Task')).toBeVisible()
 
-  // Uncheck
+  // Uncomplete — todo disappears from completed-only view
   await page.getByTestId('todo-item').getByRole('checkbox').click()
+  await expect(page.getByText('Task')).not.toBeVisible()
+
+  // Back to active view — todo is visible again
+  await page.getByTitle('Hide completed').click()
   await expect(page.getByText('Task')).toBeVisible()
 })
 
@@ -61,19 +63,22 @@ test('deletes a todo with confirmation', async ({ page }) => {
   await page.getByPlaceholder('New todo…').fill('Temp todo')
   await page.keyboard.press('Enter')
 
+  // Must complete first — delete is only available on completed todos
+  await page.getByTestId('todo-item').getByRole('checkbox').click()
+
+  // Show completed to access the todo
+  await page.getByTitle('Show completed').click()
+
+  // Cancel — todo stays
   await page.getByTestId('todo-item').hover()
   await page.getByTitle('Delete todo').click()
-
-  // Confirmation
   await expect(page.getByText(/cannot be undone/i)).toBeVisible()
-
-  // Cancel
   await page.getByRole('button', { name: 'Cancel' }).click()
-  await expect(page.getByText('Temp todo')).toBeVisible()
+  await expect(page.getByTestId('todo-item')).toHaveCount(1)
 
-  // Delete
+  // Delete for real
   await page.getByTestId('todo-item').hover()
   await page.getByTitle('Delete todo').click()
   await page.getByTestId('confirm-delete-btn').click()
-  await expect(page.getByText('Temp todo')).not.toBeVisible()
+  await expect(page.getByTestId('todo-item')).toHaveCount(0)
 })

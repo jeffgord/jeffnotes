@@ -55,28 +55,42 @@ export default function ProjectItem({ project, isSelected }: Props) {
         </button>
         <span className="flex-1 truncate">{project.name}</span>
         <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button
-            title={project.archived ? 'Unarchive' : 'Archive'}
-            onClick={(e) => {
-              e.stopPropagation()
-              project.archived
-                ? unarchiveProject(project.id)
-                : archiveProject(project.id)
-            }}
-            className="p-0.5 rounded text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200"
-          >
-            {project.archived ? <ArchiveRestore size={13} /> : <Archive size={13} />}
-          </button>
-          <button
-            title="Delete project"
-            onClick={(e) => {
-              e.stopPropagation()
-              setConfirmDelete(true)
-            }}
-            className="p-0.5 rounded text-neutral-400 hover:text-red-600 dark:hover:text-red-400"
-          >
-            <Trash2 size={13} />
-          </button>
+          {!project.archived && (
+            <button
+              title="Archive"
+              onClick={(e) => {
+                e.stopPropagation()
+                archiveProject(project.id)
+              }}
+              className="p-0.5 rounded text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200"
+            >
+              <Archive size={13} />
+            </button>
+          )}
+          {project.archived && (
+            <>
+              <button
+                title="Unarchive"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  unarchiveProject(project.id)
+                }}
+                className="p-0.5 rounded text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200"
+              >
+                <ArchiveRestore size={13} />
+              </button>
+              <button
+                title="Delete project"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setConfirmDelete(true)
+                }}
+                className="p-0.5 rounded text-neutral-400 hover:text-red-600 dark:hover:text-red-400"
+              >
+                <Trash2 size={13} />
+              </button>
+            </>
+          )}
         </div>
       </div>
 
