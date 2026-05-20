@@ -65,7 +65,7 @@ export default function TodoItem({ todo, isSelected, projectArchived = false }: 
                   todo.completed ? uncompleteTodo(todo.id) : completeTodo(todo.id)
                 }
           }
-          className={`relative shrink-0 ${projectArchived ? 'cursor-default' : 'cursor-pointer group/circle'}`}
+          className={`relative shrink-0 ${projectArchived ? 'cursor-not-allowed' : 'cursor-pointer group/circle'}`}
         >
           {todo.completed ? (
             <CircleCheck size={15} className="text-neutral-400 dark:text-neutral-500" />
