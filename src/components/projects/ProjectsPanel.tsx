@@ -131,7 +131,10 @@ export default function ProjectsPanel() {
         ))}
 
         {activeProjects.length === 0 && archivedProjects.length === 0 && !addingNew && (
-          <p className="text-xs text-neutral-400 dark:text-neutral-500 px-3 py-2">
+          <p
+            className="text-xs text-neutral-400 dark:text-neutral-500 px-3 py-2 cursor-default select-none"
+            onDoubleClick={startAdding}
+          >
             No projects yet
           </p>
         )}
