@@ -60,11 +60,6 @@ export default function ProjectItem({ project, isSelected }: Props) {
           <GripVertical size={14} />
         </button>
         <span className="flex-1 truncate">{project.name}</span>
-        {project.archived && (
-          <span className="text-xs text-neutral-400 dark:text-neutral-500 shrink-0 ml-1">
-            (archived)
-          </span>
-        )}
       </div>
 
       {menuPos && (

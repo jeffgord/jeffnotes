@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Eye } from 'lucide-react'
+import { Archive } from 'lucide-react'
 import {
   DndContext,
   closestCenter,
@@ -66,7 +66,7 @@ export default function ProjectsPanel() {
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between px-3 py-2 border-b border-neutral-200 dark:border-neutral-700 shrink-0">
         <span className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
-          Projects
+          Projects{showArchivedProjects && <span className="normal-case font-normal tracking-normal ml-1">(archived)</span>}
         </span>
         <div className="flex items-center gap-1">
           <button
@@ -78,7 +78,7 @@ export default function ProjectsPanel() {
                 : 'text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300'
             }`}
           >
-            <Eye size={14} />
+            <Archive size={14} />
           </button>
         </div>
       </div>

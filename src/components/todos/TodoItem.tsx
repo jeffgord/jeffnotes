@@ -73,11 +73,6 @@ export default function TodoItem({ todo, isSelected }: Props) {
         >
           {todo.text}
         </span>
-        {todo.completed && (
-          <span className="text-xs text-neutral-400 dark:text-neutral-500 shrink-0 ml-1">
-            (completed)
-          </span>
-        )}
       </div>
 
       {menuPos && (

@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Eye } from 'lucide-react'
+import { CheckSquare } from 'lucide-react'
 import {
   DndContext,
   closestCenter,
@@ -84,7 +84,7 @@ export default function TodosPanel() {
           className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400 truncate"
           title={selectedProject?.name}
         >
-          {selectedProject?.name ?? 'Todos'}
+          {selectedProject?.name ?? 'Todos'}{showCompletedTodos && <span className="normal-case font-normal tracking-normal ml-1">(completed)</span>}
         </span>
         <div className="flex items-center gap-1 shrink-0">
           <button
@@ -96,7 +96,7 @@ export default function TodosPanel() {
                 : 'text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300'
             }`}
           >
-            <Eye size={14} />
+            <CheckSquare size={14} />
           </button>
         </div>
       </div>
