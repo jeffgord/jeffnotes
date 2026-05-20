@@ -50,16 +50,16 @@ export default function ProjectItem({ project, isSelected }: Props) {
           setMenuPos({ x: e.clientX, y: e.clientY })
         }}
       >
+        <span className="flex-1 truncate">{project.name}</span>
         <button
           {...attributes}
           {...listeners}
-          className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 shrink-0 cursor-grab active:cursor-grabbing"
+          className="text-neutral-300 hover:text-neutral-500 dark:text-neutral-600 dark:hover:text-neutral-400 shrink-0 cursor-grab active:cursor-grabbing"
           onClick={(e) => e.stopPropagation()}
           tabIndex={-1}
         >
           <GripVertical size={14} />
         </button>
-        <span className="flex-1 truncate">{project.name}</span>
       </div>
 
       {menuPos && (

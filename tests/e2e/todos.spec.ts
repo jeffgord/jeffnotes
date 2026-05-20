@@ -41,7 +41,7 @@ test('completes and uncompletes a todo', async ({ page }) => {
   await addTodo(page, 'Task')
 
   // Complete — todo disappears from default (active) view
-  await page.getByTestId('todo-item').getByRole('checkbox').click()
+  await page.getByTestId('todo-item').getByTestId('todo-checkbox').click()
   await expect(page.getByText('Task')).not.toBeVisible()
 
   // Show completed — now shows ONLY completed todos
@@ -49,7 +49,7 @@ test('completes and uncompletes a todo', async ({ page }) => {
   await expect(page.getByText('Task')).toBeVisible()
 
   // Uncomplete — todo disappears from completed-only view
-  await page.getByTestId('todo-item').getByRole('checkbox').click()
+  await page.getByTestId('todo-item').getByTestId('todo-checkbox').click()
   await expect(page.getByText('Task')).not.toBeVisible()
 
   // Back to active view — todo is visible again
@@ -70,7 +70,7 @@ test('deletes a todo with confirmation', async ({ page }) => {
   await addTodo(page, 'Temp todo')
 
   // Must complete first — delete is only available on completed todos
-  await page.getByTestId('todo-item').getByRole('checkbox').click()
+  await page.getByTestId('todo-item').getByTestId('todo-checkbox').click()
 
   // Show completed to access the todo
   await page.getByTitle('Show completed').click()

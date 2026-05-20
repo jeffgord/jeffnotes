@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { GripVertical } from 'lucide-react'
+import { GripVertical, Circle, CircleCheck, Check } from 'lucide-react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useStore } from '../../store'
@@ -48,24 +48,26 @@ export default function TodoItem({ todo, isSelected }: Props) {
         }
       >
         <button
-          {...attributes}
-          {...listeners}
-          className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 shrink-0 cursor-grab active:cursor-grabbing"
-          onClick={(e) => e.stopPropagation()}
-          tabIndex={-1}
-        >
-          <GripVertical size={14} />
-        </button>
-        <input
-          type="checkbox"
-          checked={todo.completed}
-          onChange={(e) => {
+          data-testid="todo-checkbox"
+          onClick={(e) => {
             e.stopPropagation()
             todo.completed ? uncompleteTodo(todo.id) : completeTodo(todo.id)
           }}
-          onClick={(e) => e.stopPropagation()}
-          className="shrink-0 accent-blue-600 cursor-pointer"
-        />
+          className="relative shrink-0 cursor-pointer group/circle"
+        >
+          {todo.completed ? (
+            <CircleCheck size={15} className="text-neutral-400 dark:text-neutral-500" />
+          ) : (
+            <>
+              <Circle size={15} className="text-neutral-300 dark:text-neutral-600" />
+              <Check
+                size={9}
+                strokeWidth={3}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-neutral-200 dark:text-neutral-500 opacity-0 group-hover/circle:opacity-100 transition-opacity"
+              />
+            </>
+          )}
+        </button>
         <span
           className={`flex-1 truncate ${
             todo.completed ? 'line-through text-neutral-400 dark:text-neutral-500' : ''
@@ -73,6 +75,15 @@ export default function TodoItem({ todo, isSelected }: Props) {
         >
           {todo.text}
         </span>
+        <button
+          {...attributes}
+          {...listeners}
+          className="text-neutral-300 hover:text-neutral-500 dark:text-neutral-600 dark:hover:text-neutral-400 shrink-0 cursor-grab active:cursor-grabbing"
+          onClick={(e) => e.stopPropagation()}
+          tabIndex={-1}
+        >
+          <GripVertical size={14} />
+        </button>
       </div>
 
       {menuPos && (
