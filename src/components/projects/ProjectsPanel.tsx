@@ -52,6 +52,11 @@ export default function ProjectsPanel() {
     setAddingNew(false)
   }
 
+  function startAdding() {
+    setAddingNew(true)
+    setTimeout(() => inputRef.current?.focus(), 0)
+  }
+
   const sorted = [...projects].sort((a, b) => a.order - b.order)
   const visible = sorted.filter((p) => showArchivedProjects || !p.archived)
 
@@ -75,10 +80,7 @@ export default function ProjectsPanel() {
           </button>
           <button
             title="Add project"
-            onClick={() => {
-              setAddingNew(true)
-              setTimeout(() => inputRef.current?.focus(), 0)
-            }}
+            onClick={startAdding}
             className="p-1 rounded text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
           >
             <Plus size={14} />
@@ -86,7 +88,10 @@ export default function ProjectsPanel() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto py-1">
+      <div
+        className="flex-1 overflow-y-auto py-1"
+        onDoubleClick={(e) => { if (e.target === e.currentTarget) startAdding() }}
+      >
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -106,7 +111,7 @@ export default function ProjectsPanel() {
           </SortableContext>
         </DndContext>
 
-        {visible.length === 0 && (
+        {visible.length === 0 && !addingNew && (
           <p className="text-xs text-neutral-400 dark:text-neutral-500 px-3 py-2">
             No projects yet
           </p>

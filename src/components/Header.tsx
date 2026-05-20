@@ -91,7 +91,7 @@ export default function Header() {
           className="flex items-center gap-1 px-2 py-1 text-xs rounded text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
         >
           {themeIcons[theme]}
-          {themeLabels[theme]}
+          <span className="inline-block w-[38px]">{themeLabels[theme]}</span>
         </button>
       </div>
     </header>

@@ -52,6 +52,15 @@ test('archives and unarchives a project', async ({ page }) => {
   await expect(page.getByText('Work')).toBeVisible()
 })
 
+test('double-click on empty space opens add input', async ({ page }) => {
+  await page.locator('.flex-1.overflow-y-auto').first().dblclick()
+  await expect(page.getByPlaceholder('Project name…')).toBeVisible()
+
+  await page.getByPlaceholder('Project name…').fill('Dbl')
+  await page.keyboard.press('Enter')
+  await expect(page.getByText('Dbl')).toBeVisible()
+})
+
 test('deletes a project with confirmation', async ({ page }) => {
   await page.getByTitle('Add project').click()
   await page.getByPlaceholder('Project name…').fill('Temp')

@@ -79,7 +79,7 @@ Dark mode applied by toggling the `.dark` class on `<html>` in `App.tsx`. Tailwi
 ## Maintenance Notes
 
 - **Keep this file updated** whenever you add/remove features, change the stack, or modify test commands.
-- **Write or update tests** whenever you change store actions or add new UI flows. Unit tests live in `tests/unit/`, e2e in `tests/e2e/`.
+- **Write or update tests** whenever you change store actions or add new UI flows — do this proactively without waiting to be asked. Unit tests live in `tests/unit/`, e2e in `tests/e2e/`. Every new user interaction (click, double-click, keyboard shortcut, etc.) needs an e2e test.
 - Unit tests create fresh in-memory stores via `buildStoreState` from `src/store/testExports.ts` — no localStorage involved.
 - E2e tests call `localStorage.clear()` + `page.reload()` in `beforeEach` for isolation.
 - Tailwind v4 uses `@tailwindcss/vite` plugin (not PostCSS). No `tailwind.config.js` needed.

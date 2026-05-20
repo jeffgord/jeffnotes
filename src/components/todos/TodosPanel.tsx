@@ -54,6 +54,11 @@ export default function TodosPanel() {
     setAddingNew(false)
   }
 
+  function startAdding() {
+    setAddingNew(true)
+    setTimeout(() => inputRef.current?.focus(), 0)
+  }
+
   if (!selectedProjectId) {
     return (
       <div className="flex-1 flex items-center justify-center">
@@ -93,10 +98,7 @@ export default function TodosPanel() {
           </button>
           <button
             title="Add todo"
-            onClick={() => {
-              setAddingNew(true)
-              setTimeout(() => inputRef.current?.focus(), 0)
-            }}
+            onClick={startAdding}
             className="p-1 rounded text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
           >
             <Plus size={14} />
@@ -104,7 +106,10 @@ export default function TodosPanel() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto py-1">
+      <div
+        className="flex-1 overflow-y-auto py-1"
+        onDoubleClick={(e) => { if (e.target === e.currentTarget) startAdding() }}
+      >
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}

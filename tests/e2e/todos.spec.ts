@@ -46,6 +46,16 @@ test('completes and uncompletes a todo', async ({ page }) => {
   await expect(page.getByText('Task')).toBeVisible()
 })
 
+test('double-click on empty space opens add input', async ({ page }) => {
+  // The todos panel is the second .flex-1.overflow-y-auto column
+  await page.locator('.flex-1.overflow-y-auto').nth(1).dblclick()
+  await expect(page.getByPlaceholder('New todo…')).toBeVisible()
+
+  await page.getByPlaceholder('New todo…').fill('Dbl todo')
+  await page.keyboard.press('Enter')
+  await expect(page.getByText('Dbl todo')).toBeVisible()
+})
+
 test('deletes a todo with confirmation', async ({ page }) => {
   await page.getByTitle('Add todo').click()
   await page.getByPlaceholder('New todo…').fill('Temp todo')
