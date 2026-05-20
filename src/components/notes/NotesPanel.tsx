@@ -17,7 +17,7 @@ export default function NotesPanel() {
     <div className="flex flex-col h-full">
       {/* Project notes */}
       <div className="flex flex-col flex-1 overflow-hidden">
-        <div className="px-3 py-2 border-b border-neutral-200 dark:border-neutral-700 shrink-0">
+        <div className="flex items-center px-3 py-[11px] border-b border-neutral-200 dark:border-neutral-700 shrink-0">
           <span className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
             Project Notes
           </span>
@@ -37,7 +37,7 @@ export default function NotesPanel() {
 
       {/* Todo notes */}
       <div className="flex flex-col flex-1 overflow-hidden">
-        <div className="px-3 py-2 border-b border-neutral-200 dark:border-neutral-700 shrink-0">
+        <div className="flex items-center px-3 py-[11px] border-b border-neutral-200 dark:border-neutral-700 shrink-0">
           <span className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
             Todo Notes
           </span>
