@@ -33,7 +33,7 @@ export default function NotesPanel() {
         />
       </div>
 
-      <div className="border-t border-neutral-200 dark:border-neutral-700" />
+      <div className="border-t-2 border-slate-400 dark:border-slate-600" />
 
       {/* Todo notes */}
       <div className="flex flex-col flex-1 overflow-hidden">

@@ -27,10 +27,10 @@ export default function App() {
     <div className="flex flex-col h-screen bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100">
       <Header />
       <div className="flex flex-1 overflow-hidden">
-        <div className="w-[220px] shrink-0 border-r border-neutral-200 dark:border-neutral-700 flex flex-col overflow-hidden">
+        <div className="w-[220px] shrink-0 border-r-2 border-slate-400 dark:border-slate-600 flex flex-col overflow-hidden">
           <ProjectsPanel />
         </div>
-        <div className="w-[280px] shrink-0 border-r border-neutral-200 dark:border-neutral-700 flex flex-col overflow-hidden">
+        <div className="w-[280px] shrink-0 border-r-2 border-slate-400 dark:border-slate-600 flex flex-col overflow-hidden">
           <TodosPanel />
         </div>
         <div className="flex-1 flex flex-col overflow-hidden">
