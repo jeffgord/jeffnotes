@@ -60,6 +60,18 @@ test('completes and uncompletes a todo', async ({ page }) => {
   await expect(page.getByText('Task')).toBeVisible()
 })
 
+test('completes and incompletes a todo via context menu', async ({ page }) => {
+  await addTodo(page, 'Task')
+
+  await page.getByTestId('todo-item').click({ button: 'right' })
+  await page.getByTestId('context-menu').getByText('Mark complete').click()
+  await expect(page.getByText('Task')).toBeVisible()
+
+  await page.getByTestId('todo-item').click({ button: 'right' })
+  await page.getByTestId('context-menu').getByText('Mark incomplete').click()
+  await expect(page.getByText('Task')).toBeVisible()
+})
+
 test('double-click on empty space opens add input', async ({ page }) => {
   await page.getByTestId('todos-list').dblclick()
   await expect(page.getByPlaceholder('New todo…')).toBeVisible()

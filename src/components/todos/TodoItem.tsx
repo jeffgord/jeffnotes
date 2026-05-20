@@ -10,9 +10,10 @@ import type { Todo } from '../../types'
 interface Props {
   todo: Todo
   isSelected: boolean
+  projectArchived?: boolean
 }
 
-export default function TodoItem({ todo, isSelected }: Props) {
+export default function TodoItem({ todo, isSelected, projectArchived = false }: Props) {
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null)
   const { completeTodo, uncompleteTodo, deleteTodo, setSelectedTodo } = useStore()
@@ -25,6 +26,13 @@ export default function TodoItem({ todo, isSelected }: Props) {
     transition,
     opacity: isDragging ? 0.4 : undefined,
   }
+
+  const menuItems = todo.completed
+    ? [
+        { label: 'Mark incomplete', onClick: () => uncompleteTodo(todo.id) },
+        { label: 'Delete', onClick: () => setConfirmDelete(true), danger: true as const },
+      ]
+    : [{ label: 'Mark complete', onClick: () => completeTodo(todo.id) }]
 
   return (
     <>
@@ -39,32 +47,38 @@ export default function TodoItem({ todo, isSelected }: Props) {
         }`}
         onClick={() => setSelectedTodo(isSelected ? null : todo.id)}
         onContextMenu={
-          todo.completed
-            ? (e) => {
+          projectArchived
+            ? undefined
+            : (e) => {
                 e.preventDefault()
                 setMenuPos({ x: e.clientX, y: e.clientY })
               }
-            : undefined
         }
       >
         <button
           data-testid="todo-checkbox"
-          onClick={(e) => {
-            e.stopPropagation()
-            todo.completed ? uncompleteTodo(todo.id) : completeTodo(todo.id)
-          }}
-          className="relative shrink-0 cursor-pointer group/circle"
+          onClick={
+            projectArchived
+              ? (e) => e.stopPropagation()
+              : (e) => {
+                  e.stopPropagation()
+                  todo.completed ? uncompleteTodo(todo.id) : completeTodo(todo.id)
+                }
+          }
+          className={`relative shrink-0 ${projectArchived ? 'cursor-default' : 'cursor-pointer group/circle'}`}
         >
           {todo.completed ? (
             <CircleCheck size={15} className="text-neutral-400 dark:text-neutral-500" />
           ) : (
             <>
               <Circle size={15} className="text-neutral-300 dark:text-neutral-600" />
-              <Check
-                size={9}
-                strokeWidth={3}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-neutral-200 dark:text-neutral-500 opacity-0 group-hover/circle:opacity-100 transition-opacity"
-              />
+              {!projectArchived && (
+                <Check
+                  size={9}
+                  strokeWidth={3}
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-neutral-200 dark:text-neutral-500 opacity-0 group-hover/circle:opacity-100 transition-opacity"
+                />
+              )}
             </>
           )}
         </button>
@@ -75,7 +89,7 @@ export default function TodoItem({ todo, isSelected }: Props) {
         >
           {todo.text}
         </span>
-        {!todo.completed && (
+        {!todo.completed && !projectArchived && (
           <button
             {...attributes}
             {...listeners}
@@ -92,7 +106,7 @@ export default function TodoItem({ todo, isSelected }: Props) {
         <ContextMenu
           x={menuPos.x}
           y={menuPos.y}
-          items={[{ label: 'Delete', onClick: () => setConfirmDelete(true), danger: true }]}
+          items={menuItems}
           onClose={() => setMenuPos(null)}
         />
       )}

@@ -27,7 +27,7 @@ export default function NotesPanel() {
           onChange={(e) =>
             selectedProject && updateProjectNotes(selectedProject.id, e.target.value)
           }
-          disabled={!selectedProject}
+          disabled={!selectedProject || selectedProject.archived}
           placeholder={selectedProject ? 'Notes for this project…' : 'Select a project…'}
           className="flex-1 w-full resize-none p-3 text-sm bg-transparent outline-none placeholder:text-neutral-400 dark:placeholder:text-neutral-600 disabled:cursor-not-allowed"
         />
@@ -47,7 +47,7 @@ export default function NotesPanel() {
           onChange={(e) =>
             selectedTodo && updateTodoNotes(selectedTodo.id, e.target.value)
           }
-          disabled={!selectedTodo}
+          disabled={!selectedTodo || selectedProject?.archived}
           placeholder={selectedTodo ? 'Notes for this todo…' : 'Select a todo…'}
           className="flex-1 w-full resize-none p-3 text-sm bg-transparent outline-none placeholder:text-neutral-400 dark:placeholder:text-neutral-600 disabled:cursor-not-allowed"
         />

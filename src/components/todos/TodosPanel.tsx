@@ -55,6 +55,7 @@ export default function TodosPanel() {
   }
 
   function startAdding() {
+    if (selectedProject?.archived) return
     setAddingNew(true)
     setTimeout(() => inputRef.current?.focus(), 0)
   }
@@ -139,6 +140,7 @@ export default function TodosPanel() {
                 key={todo.id}
                 todo={todo}
                 isSelected={todo.id === selectedTodoId}
+                projectArchived={selectedProject?.archived}
               />
             ))}
           </SortableContext>
