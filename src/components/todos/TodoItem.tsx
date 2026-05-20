@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { GripVertical, Circle, CircleCheck, Check } from 'lucide-react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -16,7 +16,10 @@ interface Props {
 export default function TodoItem({ todo, isSelected, projectArchived = false }: Props) {
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null)
-  const { completeTodo, uncompleteTodo, deleteTodo, setSelectedTodo } = useStore()
+  const [isEditing, setIsEditing] = useState(false)
+  const [editText, setEditText] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
+  const { completeTodo, uncompleteTodo, deleteTodo, updateTodoText, setSelectedTodo } = useStore()
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: todo.id })
@@ -27,12 +30,28 @@ export default function TodoItem({ todo, isSelected, projectArchived = false }: 
     opacity: isDragging ? 0.4 : undefined,
   }
 
+  function startEditing() {
+    setEditText(todo.text)
+    setIsEditing(true)
+    setTimeout(() => inputRef.current?.focus(), 0)
+  }
+
+  function commitEdit() {
+    const trimmed = editText.trim()
+    if (trimmed) updateTodoText(todo.id, trimmed)
+    setIsEditing(false)
+  }
+
   const menuItems = todo.completed
     ? [
+        { label: 'Rename', onClick: startEditing },
         { label: 'Mark incomplete', onClick: () => uncompleteTodo(todo.id) },
         { label: 'Delete', onClick: () => setConfirmDelete(true), danger: true as const },
       ]
-    : [{ label: 'Mark complete', onClick: () => completeTodo(todo.id) }]
+    : [
+        { label: 'Rename', onClick: startEditing },
+        { label: 'Mark complete', onClick: () => completeTodo(todo.id) },
+      ]
 
   return (
     <>
@@ -45,7 +64,7 @@ export default function TodoItem({ todo, isSelected, projectArchived = false }: 
             ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-900 dark:text-blue-100'
             : 'hover:bg-neutral-100 dark:hover:bg-neutral-800'
         }`}
-        onClick={() => setSelectedTodo(isSelected ? null : todo.id)}
+        onClick={() => { if (!isEditing) setSelectedTodo(isSelected ? null : todo.id) }}
         onContextMenu={
           projectArchived
             ? undefined
@@ -82,14 +101,31 @@ export default function TodoItem({ todo, isSelected, projectArchived = false }: 
             </>
           )}
         </button>
-        <span
-          className={`flex-1 truncate ${
-            todo.completed ? 'line-through text-neutral-400 dark:text-neutral-500' : ''
-          }`}
-        >
-          {todo.text}
-        </span>
-        {!todo.completed && !projectArchived && (
+        {isEditing ? (
+          <input
+            ref={inputRef}
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') commitEdit()
+              if (e.key === 'Escape') setIsEditing(false)
+            }}
+            onBlur={commitEdit}
+            onClick={(e) => e.stopPropagation()}
+            className="flex-1 min-w-0 text-sm px-1 py-0 rounded border border-blue-400 dark:border-blue-500 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 outline-none shadow-none"
+          />
+        ) : (
+          <span
+            className={`flex-1 truncate ${
+              todo.completed ? 'line-through text-neutral-400 dark:text-neutral-500' : ''
+            }`}
+            onClick={(e) => { e.stopPropagation(); setSelectedTodo(todo.id) }}
+            onDoubleClick={projectArchived ? undefined : (e) => { e.stopPropagation(); startEditing() }}
+          >
+            {todo.text}
+          </span>
+        )}
+        {!todo.completed && !projectArchived && !isEditing && (
           <button
             {...attributes}
             {...listeners}

@@ -121,7 +121,7 @@ export default function TodosPanel() {
               }}
               onBlur={handleSubmit}
               placeholder="New todo…"
-              className="w-full text-sm px-2 py-1 rounded border border-blue-400 dark:border-blue-500 bg-white dark:bg-neutral-800 outline-none focus:ring-1 focus:ring-blue-400"
+              className="w-full text-sm px-2 py-1 rounded border border-blue-400 dark:border-blue-500 bg-white dark:bg-neutral-800 outline-none shadow-none"
             />
           </div>
         )}

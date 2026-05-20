@@ -63,6 +63,25 @@ test('double-click on empty space opens add input', async ({ page }) => {
   await expect(page.getByText('Dbl')).toBeVisible()
 })
 
+test('renames a project via double-click', async ({ page }) => {
+  await addProject(page, 'Old Name')
+  await page.getByTestId('project-item').getByText('Old Name').dblclick()
+  await page.locator('input[value="Old Name"]').fill('New Name')
+  await page.keyboard.press('Enter')
+  await expect(page.getByTestId('project-item').getByText('New Name')).toBeVisible()
+  await expect(page.getByTestId('project-item').getByText('Old Name')).not.toBeVisible()
+})
+
+test('renames a project via context menu', async ({ page }) => {
+  await addProject(page, 'Old Name')
+  await page.getByTestId('project-item').click({ button: 'right' })
+  await page.getByTestId('context-menu').getByText('Rename').click()
+  await page.locator('input[value="Old Name"]').fill('New Name')
+  await page.keyboard.press('Enter')
+  await expect(page.getByTestId('project-item').getByText('New Name')).toBeVisible()
+  await expect(page.getByTestId('project-item').getByText('Old Name')).not.toBeVisible()
+})
+
 test('deletes a project with confirmation', async ({ page }) => {
   await addProject(page, 'Temp')
 

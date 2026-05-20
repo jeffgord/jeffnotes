@@ -81,6 +81,25 @@ test('double-click on empty space opens add input', async ({ page }) => {
   await expect(page.getByText('Dbl todo')).toBeVisible()
 })
 
+test('renames a todo via double-click', async ({ page }) => {
+  await addTodo(page, 'Old Task')
+  await page.getByTestId('todo-item').getByText('Old Task').dblclick()
+  await page.locator('input[value="Old Task"]').fill('New Task')
+  await page.keyboard.press('Enter')
+  await expect(page.getByText('New Task')).toBeVisible()
+  await expect(page.getByText('Old Task')).not.toBeVisible()
+})
+
+test('renames a todo via context menu', async ({ page }) => {
+  await addTodo(page, 'Old Task')
+  await page.getByTestId('todo-item').click({ button: 'right' })
+  await page.getByTestId('context-menu').getByText('Rename').click()
+  await page.locator('input[value="Old Task"]').fill('New Task')
+  await page.keyboard.press('Enter')
+  await expect(page.getByText('New Task')).toBeVisible()
+  await expect(page.getByText('Old Task')).not.toBeVisible()
+})
+
 test('deletes a todo with confirmation', async ({ page }) => {
   await addTodo(page, 'Temp todo')
 

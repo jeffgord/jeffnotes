@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { GripVertical } from 'lucide-react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -15,7 +15,10 @@ interface Props {
 export default function ProjectItem({ project, isSelected }: Props) {
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null)
-  const { archiveProject, unarchiveProject, deleteProject, setSelectedProject } = useStore()
+  const [isEditing, setIsEditing] = useState(false)
+  const [editName, setEditName] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
+  const { archiveProject, unarchiveProject, deleteProject, updateProjectName, setSelectedProject } = useStore()
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: project.id })
@@ -26,12 +29,28 @@ export default function ProjectItem({ project, isSelected }: Props) {
     opacity: isDragging ? 0.4 : undefined,
   }
 
+  function startEditing() {
+    setEditName(project.name)
+    setIsEditing(true)
+    setTimeout(() => inputRef.current?.focus(), 0)
+  }
+
+  function commitEdit() {
+    const trimmed = editName.trim()
+    if (trimmed) updateProjectName(project.id, trimmed)
+    setIsEditing(false)
+  }
+
   const menuItems = project.archived
     ? [
+        { label: 'Rename', onClick: startEditing },
         { label: 'Unarchive', onClick: () => unarchiveProject(project.id) },
         { label: 'Delete', onClick: () => setConfirmDelete(true), danger: true as const },
       ]
-    : [{ label: 'Archive', onClick: () => archiveProject(project.id) }]
+    : [
+        { label: 'Rename', onClick: startEditing },
+        { label: 'Archive', onClick: () => archiveProject(project.id) },
+      ]
 
   return (
     <>
@@ -44,16 +63,35 @@ export default function ProjectItem({ project, isSelected }: Props) {
             ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-900 dark:text-blue-100'
             : 'hover:bg-neutral-100 dark:hover:bg-neutral-800'
         }`}
-        onClick={() => setSelectedProject(isSelected ? null : project.id)}
+        onClick={() => { if (!isEditing) setSelectedProject(isSelected ? null : project.id) }}
         onContextMenu={(e) => {
           e.preventDefault()
           setMenuPos({ x: e.clientX, y: e.clientY })
         }}
       >
-        <span className={`flex-1 truncate ${project.archived ? 'line-through text-neutral-400 dark:text-neutral-500' : ''}`}>
-          {project.name}
-        </span>
-        {!project.archived && (
+        {isEditing ? (
+          <input
+            ref={inputRef}
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') commitEdit()
+              if (e.key === 'Escape') setIsEditing(false)
+            }}
+            onBlur={commitEdit}
+            onClick={(e) => e.stopPropagation()}
+            className="flex-1 min-w-0 text-sm px-1 py-0 rounded border border-blue-400 dark:border-blue-500 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 outline-none shadow-none"
+          />
+        ) : (
+          <span
+            className={`flex-1 truncate ${project.archived ? 'line-through text-neutral-400 dark:text-neutral-500' : ''}`}
+            onClick={(e) => { e.stopPropagation(); setSelectedProject(project.id) }}
+            onDoubleClick={(e) => { e.stopPropagation(); startEditing() }}
+          >
+            {project.name}
+          </span>
+        )}
+        {!project.archived && !isEditing && (
           <button
             {...attributes}
             {...listeners}
