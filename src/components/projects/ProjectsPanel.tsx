@@ -19,8 +19,7 @@ import ProjectItem from './ProjectItem'
 
 export default function ProjectsPanel() {
   const [addingNew, setAddingNew] = useState(false)
-  const [newName, setNewName] = useState('')
-  const inputRef = useRef<HTMLInputElement>(null)
+  const addSpanRef = useRef<HTMLSpanElement>(null)
 
   const {
     projects,
@@ -46,15 +45,14 @@ export default function ProjectsPanel() {
   }
 
   function handleSubmit() {
-    const name = newName.trim()
+    const name = addSpanRef.current?.textContent?.trim() ?? ''
     if (name) addProject(name)
-    setNewName('')
     setAddingNew(false)
   }
 
   function startAdding() {
     setAddingNew(true)
-    setTimeout(() => inputRef.current?.focus(), 0)
+    setTimeout(() => addSpanRef.current?.focus(), 0)
   }
 
   const sorted = [...projects].sort((a, b) => a.order - b.order)
@@ -88,21 +86,19 @@ export default function ProjectsPanel() {
         onDoubleClick={(e) => { if (e.target === e.currentTarget) startAdding() }}
       >
         {addingNew && (
-          <div className="px-2 py-1">
-            <input
-              ref={inputRef}
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
+          <div className="flex items-center gap-1 px-2 py-1.5 rounded mx-1 my-0.5 text-sm">
+            <span
+              ref={addSpanRef}
+              data-testid="add-input"
+              contentEditable
+              suppressContentEditableWarning
+              data-placeholder="Project name…"
+              className="flex-1 outline-none cursor-text"
               onKeyDown={(e) => {
-                if (e.key === 'Enter') handleSubmit()
-                if (e.key === 'Escape') {
-                  setNewName('')
-                  setAddingNew(false)
-                }
+                if (e.key === 'Enter') { e.preventDefault(); handleSubmit() }
+                if (e.key === 'Escape') setAddingNew(false)
               }}
               onBlur={handleSubmit}
-              placeholder="Project name…"
-              className="w-full text-sm px-2 py-1 rounded border border-blue-400 dark:border-blue-500 bg-white dark:bg-neutral-800 outline-none shadow-none"
             />
           </div>
         )}

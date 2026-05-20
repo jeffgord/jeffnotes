@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { CheckSquare } from 'lucide-react'
+import { CheckSquare, Circle } from 'lucide-react'
 import {
   DndContext,
   closestCenter,
@@ -19,8 +19,7 @@ import TodoItem from './TodoItem'
 
 export default function TodosPanel() {
   const [addingNew, setAddingNew] = useState(false)
-  const [newText, setNewText] = useState('')
-  const inputRef = useRef<HTMLInputElement>(null)
+  const addSpanRef = useRef<HTMLSpanElement>(null)
 
   const {
     projects,
@@ -48,16 +47,15 @@ export default function TodosPanel() {
   }
 
   function handleSubmit() {
-    const text = newText.trim()
+    const text = addSpanRef.current?.textContent?.trim() ?? ''
     if (text && selectedProjectId) addTodo(selectedProjectId, text)
-    setNewText('')
     setAddingNew(false)
   }
 
   function startAdding() {
     if (selectedProject?.archived) return
     setAddingNew(true)
-    setTimeout(() => inputRef.current?.focus(), 0)
+    setTimeout(() => addSpanRef.current?.focus(), 0)
   }
 
   if (!selectedProjectId) {
@@ -107,21 +105,20 @@ export default function TodosPanel() {
         onDoubleClick={(e) => { if (e.target === e.currentTarget) startAdding() }}
       >
         {addingNew && (
-          <div className="px-2 py-1">
-            <input
-              ref={inputRef}
-              value={newText}
-              onChange={(e) => setNewText(e.target.value)}
+          <div className="flex items-center gap-1.5 px-2 py-1.5 rounded mx-1 my-0.5 text-sm">
+            <Circle size={15} className="shrink-0 text-neutral-300 dark:text-neutral-600" />
+            <span
+              ref={addSpanRef}
+              data-testid="add-input"
+              contentEditable
+              suppressContentEditableWarning
+              data-placeholder="New todo…"
+              className="flex-1 outline-none cursor-text"
               onKeyDown={(e) => {
-                if (e.key === 'Enter') handleSubmit()
-                if (e.key === 'Escape') {
-                  setNewText('')
-                  setAddingNew(false)
-                }
+                if (e.key === 'Enter') { e.preventDefault(); handleSubmit() }
+                if (e.key === 'Escape') setAddingNew(false)
               }}
               onBlur={handleSubmit}
-              placeholder="New todo…"
-              className="w-full text-sm px-2 py-1 rounded border border-blue-400 dark:border-blue-500 bg-white dark:bg-neutral-800 outline-none shadow-none"
             />
           </div>
         )}

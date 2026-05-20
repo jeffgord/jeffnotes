@@ -4,7 +4,7 @@ async function addProject(page: Page, name: string) {
   const list = page.getByTestId('projects-list')
   const box = await list.boundingBox()
   await page.mouse.dblclick(box!.x + box!.width / 2, box!.y + box!.height - 20)
-  await page.getByPlaceholder('Project name…').fill(name)
+  await page.getByTestId('add-input').fill(name)
   await page.keyboard.press('Enter')
 }
 
@@ -56,9 +56,9 @@ test('archives and unarchives a project', async ({ page }) => {
 
 test('double-click on empty space opens add input', async ({ page }) => {
   await page.getByTestId('projects-list').dblclick()
-  await expect(page.getByPlaceholder('Project name…')).toBeVisible()
+  await expect(page.getByTestId('add-input')).toBeVisible()
 
-  await page.getByPlaceholder('Project name…').fill('Dbl')
+  await page.getByTestId('add-input').fill('Dbl')
   await page.keyboard.press('Enter')
   await expect(page.getByText('Dbl')).toBeVisible()
 })
@@ -66,7 +66,7 @@ test('double-click on empty space opens add input', async ({ page }) => {
 test('renames a project via double-click', async ({ page }) => {
   await addProject(page, 'Old Name')
   await page.getByTestId('project-item').getByText('Old Name').dblclick()
-  await page.locator('input[value="Old Name"]').fill('New Name')
+  await page.getByTestId('rename-input').fill('New Name')
   await page.keyboard.press('Enter')
   await expect(page.getByTestId('project-item').getByText('New Name')).toBeVisible()
   await expect(page.getByTestId('project-item').getByText('Old Name')).not.toBeVisible()
@@ -76,7 +76,7 @@ test('renames a project via context menu', async ({ page }) => {
   await addProject(page, 'Old Name')
   await page.getByTestId('project-item').click({ button: 'right' })
   await page.getByTestId('context-menu').getByText('Rename').click()
-  await page.locator('input[value="Old Name"]').fill('New Name')
+  await page.getByTestId('rename-input').fill('New Name')
   await page.keyboard.press('Enter')
   await expect(page.getByTestId('project-item').getByText('New Name')).toBeVisible()
   await expect(page.getByTestId('project-item').getByText('Old Name')).not.toBeVisible()

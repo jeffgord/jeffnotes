@@ -1,2 +1,11 @@
 @import "tailwindcss";
 @custom-variant dark (&:is(.dark, .dark *));
+
+[contenteditable][data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  color: #a3a3a3;
+  pointer-events: none;
+}
+.dark [contenteditable][data-placeholder]:empty::before {
+  color: #525252;
+}

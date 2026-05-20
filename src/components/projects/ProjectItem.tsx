@@ -16,8 +16,7 @@ export default function ProjectItem({ project, isSelected }: Props) {
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [menuPos, setMenuPos] = useState<{ x: number; y: number } | null>(null)
   const [isEditing, setIsEditing] = useState(false)
-  const [editName, setEditName] = useState('')
-  const inputRef = useRef<HTMLInputElement>(null)
+  const spanRef = useRef<HTMLSpanElement>(null)
   const { archiveProject, unarchiveProject, deleteProject, updateProjectName, setSelectedProject } = useStore()
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -30,14 +29,21 @@ export default function ProjectItem({ project, isSelected }: Props) {
   }
 
   function startEditing() {
-    setEditName(project.name)
     setIsEditing(true)
-    setTimeout(() => inputRef.current?.focus(), 0)
+    setTimeout(() => {
+      if (!spanRef.current) return
+      spanRef.current.focus()
+      const range = document.createRange()
+      range.selectNodeContents(spanRef.current)
+      window.getSelection()?.removeAllRanges()
+      window.getSelection()?.addRange(range)
+    }, 0)
   }
 
   function commitEdit() {
-    const trimmed = editName.trim()
+    const trimmed = spanRef.current?.textContent?.trim() ?? ''
     if (trimmed) updateProjectName(project.id, trimmed)
+    else if (spanRef.current) spanRef.current.textContent = project.name
     setIsEditing(false)
   }
 
@@ -69,28 +75,26 @@ export default function ProjectItem({ project, isSelected }: Props) {
           setMenuPos({ x: e.clientX, y: e.clientY })
         }}
       >
-        {isEditing ? (
-          <input
-            ref={inputRef}
-            value={editName}
-            onChange={(e) => setEditName(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') commitEdit()
-              if (e.key === 'Escape') setIsEditing(false)
-            }}
-            onBlur={commitEdit}
-            onClick={(e) => e.stopPropagation()}
-            className="flex-1 min-w-0 text-sm px-1 py-0 rounded border border-blue-400 dark:border-blue-500 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 outline-none shadow-none"
-          />
-        ) : (
-          <span
-            className={`flex-1 truncate ${project.archived ? 'line-through text-neutral-400 dark:text-neutral-500' : ''}`}
-            onClick={(e) => { e.stopPropagation(); setSelectedProject(project.id) }}
-            onDoubleClick={(e) => { e.stopPropagation(); startEditing() }}
-          >
-            {project.name}
-          </span>
-        )}
+        <span
+          ref={spanRef}
+          data-testid={isEditing ? 'rename-input' : undefined}
+          contentEditable={isEditing ? true : undefined}
+          suppressContentEditableWarning
+          className={`flex-1 truncate ${project.archived ? 'line-through text-neutral-400 dark:text-neutral-500' : ''} ${isEditing ? 'outline-none cursor-text' : ''}`}
+          onClick={(e) => { e.stopPropagation(); if (!isEditing) setSelectedProject(project.id) }}
+          onDoubleClick={(e) => { e.stopPropagation(); if (!isEditing) startEditing() }}
+          onKeyDown={(e) => {
+            if (!isEditing) return
+            if (e.key === 'Enter') { e.preventDefault(); commitEdit() }
+            if (e.key === 'Escape') {
+              if (spanRef.current) spanRef.current.textContent = project.name
+              setIsEditing(false)
+            }
+          }}
+          onBlur={() => { if (isEditing) commitEdit() }}
+        >
+          {project.name}
+        </span>
         {!project.archived && !isEditing && (
           <button
             {...attributes}

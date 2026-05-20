@@ -4,7 +4,7 @@ async function addProject(page: Page, name: string) {
   const list = page.getByTestId('projects-list')
   const box = await list.boundingBox()
   await page.mouse.dblclick(box!.x + box!.width / 2, box!.y + box!.height - 20)
-  await page.getByPlaceholder('Project name…').fill(name)
+  await page.getByTestId('add-input').fill(name)
   await page.keyboard.press('Enter')
 }
 
@@ -12,7 +12,7 @@ async function addTodo(page: Page, text: string) {
   const list = page.getByTestId('todos-list')
   const box = await list.boundingBox()
   await page.mouse.dblclick(box!.x + box!.width / 2, box!.y + box!.height - 20)
-  await page.getByPlaceholder('New todo…').fill(text)
+  await page.getByTestId('add-input').fill(text)
   await page.keyboard.press('Enter')
 }
 
