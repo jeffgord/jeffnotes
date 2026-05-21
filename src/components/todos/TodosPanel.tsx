@@ -111,25 +111,6 @@ export default function TodosPanel() {
         className="flex-1 overflow-y-auto py-1 select-none"
         onDoubleClick={(e) => { if (e.target === e.currentTarget) startAdding() }}
       >
-        {addingNew && (
-          <div className="flex items-center gap-1.5 px-2 py-1.5 rounded mx-1 my-0.5 text-sm">
-            <Circle size={15} className="shrink-0 text-neutral-300 dark:text-neutral-600" />
-            <span
-              ref={addSpanRef}
-              data-testid="add-input"
-              contentEditable
-              suppressContentEditableWarning
-              data-placeholder="New todo…"
-              className="flex-1 outline-none cursor-text"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') { e.preventDefault(); handleSubmit() }
-                if (e.key === 'Escape') setAddingNew(false)
-              }}
-              onBlur={handleSubmit}
-            />
-          </div>
-        )}
-
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -149,6 +130,25 @@ export default function TodosPanel() {
             ))}
           </SortableContext>
         </DndContext>
+
+        {addingNew && (
+          <div className="flex items-center gap-1.5 px-2 py-1.5 rounded mx-1 my-0.5 text-sm">
+            <Circle size={15} className="shrink-0 text-neutral-300 dark:text-neutral-600" />
+            <span
+              ref={addSpanRef}
+              data-testid="add-input"
+              contentEditable
+              suppressContentEditableWarning
+              data-placeholder="New todo…"
+              className="flex-1 outline-none cursor-text"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') { e.preventDefault(); handleSubmit() }
+                if (e.key === 'Escape') setAddingNew(false)
+              }}
+              onBlur={handleSubmit}
+            />
+          </div>
+        )}
 
         {!hideCompletedTodos && completedTodos.map((todo) => (
           <TodoItem

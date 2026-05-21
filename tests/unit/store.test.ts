@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { create } from 'zustand'
 import { nanoid } from 'nanoid'
-import type { AppStore } from '../../src/store/testExports'
-import { buildStoreState } from '../../src/store/testExports'
+import type { AppStore } from '../../src/store/storeState'
+import { buildStoreState } from '../../src/store/storeState'
 
 // Build a fresh in-memory store for each test (no persist middleware)
 function createTestStore() {
@@ -31,12 +31,12 @@ describe('Project actions', () => {
     expect(selectedProjectId).toBe(projects[0].id)
   })
 
-  it('adds multiple projects with newest at top', () => {
+  it('adds multiple projects in order of creation', () => {
     store.getState().addProject('A')
     store.getState().addProject('B')
     const { projects } = store.getState()
     const sorted = [...projects].sort((a, b) => a.order - b.order)
-    expect(sorted.map((p) => p.name)).toEqual(['B', 'A'])
+    expect(sorted.map((p) => p.name)).toEqual(['A', 'B'])
   })
 
   it('updates project name', () => {
@@ -78,13 +78,13 @@ describe('Project actions', () => {
     store.getState().addProject('A')
     store.getState().addProject('B')
     store.getState().addProject('C')
-    // Newest first: C(0), B(1), A(2)
+    // Creation order: A(0), B(1), C(2) — move A to C's position
     const [a, , c] = [...store.getState().projects].sort((x, y) => x.order - y.order)
     store.getState().reorderProjects(a.id, c.id)
     const reordered = [...store.getState().projects].sort((x, y) => x.order - y.order)
     expect(reordered[0].name).toBe('B')
-    expect(reordered[1].name).toBe('A')
-    expect(reordered[2].name).toBe('C')
+    expect(reordered[1].name).toBe('C')
+    expect(reordered[2].name).toBe('A')
   })
 
   it('updates project notes', () => {
@@ -161,13 +161,13 @@ describe('Todo actions', () => {
     store.getState().addTodo(projectId, 'A')
     store.getState().addTodo(projectId, 'B')
     store.getState().addTodo(projectId, 'C')
-    // Newest first: C(0), B(1), A(2)
+    // Creation order: A(0), B(1), C(2) — move A to C's position
     const [a, , c] = [...store.getState().todos].sort((x, y) => x.order - y.order)
     store.getState().reorderTodos(a.id, c.id)
     const reordered = [...store.getState().todos].sort((x, y) => x.order - y.order)
     expect(reordered[0].text).toBe('B')
-    expect(reordered[1].text).toBe('A')
-    expect(reordered[2].text).toBe('C')
+    expect(reordered[1].text).toBe('C')
+    expect(reordered[2].text).toBe('A')
   })
 
   it('updates todo text', () => {

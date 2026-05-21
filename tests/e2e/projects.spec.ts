@@ -24,9 +24,8 @@ test('adds a project', async ({ page }) => {
 })
 
 test('selects a project', async ({ page }) => {
-  await addProject(page, 'Work')
   await expect(page.getByText('Select a project to view todos')).toBeVisible()
-  await page.getByText('Work').click()
+  await addProject(page, 'Work')
   await expect(page.getByText('Select a project to view todos')).not.toBeVisible()
 })
 

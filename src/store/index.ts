@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { buildStoreState } from './testExports'
-import type { AppStore } from './testExports'
+import { buildStoreState } from './storeState'
+import type { AppStore } from './storeState'
 
 export { type AppStore }
 

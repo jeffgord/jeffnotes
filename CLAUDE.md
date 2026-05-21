@@ -33,7 +33,7 @@ src/
   types/index.ts          — Project, Todo, Theme, PersistedState interfaces
   store/
     index.ts              — Zustand store (wraps buildStoreState with persist middleware)
-    testExports.ts        — AppStore type + buildStoreState (shared with unit tests)
+    storeState.ts        — AppStore type + buildStoreState (shared with unit tests)
   utils/stateIO.ts        — exportStateToJson, importStateFromJson, downloadJson
   components/
     Header.tsx            — App title, theme toggle, import/export buttons
@@ -81,7 +81,7 @@ Dark mode applied by toggling the `.dark` class on `<html>` in `App.tsx`. Tailwi
 
 - **Keep this file updated** whenever you add/remove features, change the stack, or modify test commands.
 - **Write or update tests** whenever you change store actions or add new UI flows — do this proactively without waiting to be asked. Unit tests live in `tests/unit/`, e2e in `tests/e2e/`. Every new user interaction (click, double-click, keyboard shortcut, etc.) needs an e2e test.
-- Unit tests create fresh in-memory stores via `buildStoreState` from `src/store/testExports.ts` — no localStorage involved.
+- Unit tests create fresh in-memory stores via `buildStoreState` from `src/store/storeState.ts` — no localStorage involved.
 - E2e tests call `localStorage.clear()` + `page.reload()` in `beforeEach` for isolation.
 - E2e test files use local `addProject`/`addTodo` helpers that dblclick near the bottom of the list area (`data-testid="projects-list"` / `"todos-list"`) to avoid hitting existing items.
 - Item actions (archive/unarchive/delete) are triggered via right-click context menu — use `click({ button: 'right' })` + `getByTestId('context-menu').getByText(...)` in tests.

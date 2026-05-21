@@ -92,24 +92,6 @@ export default function ProjectsPanel() {
         className="flex-1 overflow-y-auto py-1 select-none"
         onDoubleClick={(e) => { if (e.target === e.currentTarget) startAdding() }}
       >
-        {addingNew && (
-          <div className="flex items-center gap-1 px-2 py-1.5 rounded mx-1 my-0.5 text-sm">
-            <span
-              ref={addSpanRef}
-              data-testid="add-input"
-              contentEditable
-              suppressContentEditableWarning
-              data-placeholder="Project name…"
-              className="flex-1 outline-none cursor-text"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') { e.preventDefault(); handleSubmit() }
-                if (e.key === 'Escape') setAddingNew(false)
-              }}
-              onBlur={handleSubmit}
-            />
-          </div>
-        )}
-
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -128,6 +110,24 @@ export default function ProjectsPanel() {
             ))}
           </SortableContext>
         </DndContext>
+
+        {addingNew && (
+          <div className="flex items-center gap-1 px-2 py-1.5 rounded mx-1 my-0.5 text-sm">
+            <span
+              ref={addSpanRef}
+              data-testid="add-input"
+              contentEditable
+              suppressContentEditableWarning
+              data-placeholder="Project name…"
+              className="flex-1 outline-none cursor-text"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') { e.preventDefault(); handleSubmit() }
+                if (e.key === 'Escape') setAddingNew(false)
+              }}
+              onBlur={handleSubmit}
+            />
+          </div>
+        )}
 
         {!hideArchivedProjects && archivedProjects.map((project) => (
           <ProjectItem

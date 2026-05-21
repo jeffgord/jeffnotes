@@ -36,14 +36,17 @@ export const buildStoreState: StateCreator<AppStore> = (set, get) => ({
 
   addProject: (name) => {
     const id = nanoid()
-    set((s) => ({
-      projects: [
-        { id, name: name.trim(), order: 0, archived: false, notes: '', createdAt: Date.now() },
-        ...s.projects.map((p: Project) => ({ ...p, order: p.order + 1 })),
-      ],
-      selectedProjectId: id,
-      selectedTodoId: null,
-    }))
+    set((s) => {
+      const maxOrder = s.projects.reduce((m: number, p: Project) => Math.max(m, p.order), -1)
+      return {
+        projects: [
+          ...s.projects,
+          { id, name: name.trim(), order: maxOrder + 1, archived: false, notes: '', createdAt: Date.now() },
+        ],
+        selectedProjectId: id,
+        selectedTodoId: null,
+      }
+    })
   },
 
   updateProjectName: (id, name) =>
@@ -106,15 +109,18 @@ export const buildStoreState: StateCreator<AppStore> = (set, get) => ({
 
   addTodo: (projectId, text) => {
     const id = nanoid()
-    set((s) => ({
-      todos: [
-        { id, projectId, text: text.trim(), order: 0, completed: false, notes: '', createdAt: Date.now() },
-        ...s.todos.map((t: Todo) =>
-          t.projectId === projectId ? { ...t, order: t.order + 1 } : t
-        ),
-      ],
-      selectedTodoId: id,
-    }))
+    set((s) => {
+      const maxOrder = s.todos
+        .filter((t: Todo) => t.projectId === projectId)
+        .reduce((m: number, t: Todo) => Math.max(m, t.order), -1)
+      return {
+        todos: [
+          ...s.todos,
+          { id, projectId, text: text.trim(), order: maxOrder + 1, completed: false, notes: '', createdAt: Date.now() },
+        ],
+        selectedTodoId: id,
+      }
+    })
   },
 
   updateTodoText: (id, text) =>
