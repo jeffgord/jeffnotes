@@ -82,7 +82,7 @@ export default function TodosPanel() {
           className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400 truncate"
           title={selectedProject?.name}
         >
-          {selectedProject ? `${selectedProject.name} Todos` : 'Todos'}
+          Todos
         </span>
         <div className="flex items-center gap-1 shrink-0">
           <button

@@ -67,7 +67,7 @@ export default function TodoItem({ todo, isSelected, projectArchived = false }: 
         data-testid="todo-item"
         className={`flex items-center gap-1.5 px-2 py-1.5 cursor-pointer select-none rounded mx-1 my-0.5 text-sm ${
           isSelected
-            ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-900 dark:text-blue-100'
+            ? 'bg-slate-300 dark:bg-slate-500/50 text-slate-900 dark:text-slate-100'
             : 'hover:bg-neutral-100 dark:hover:bg-neutral-800'
         }`}
         onClick={() => { if (!isEditing) setSelectedTodo(isSelected ? null : todo.id) }}
