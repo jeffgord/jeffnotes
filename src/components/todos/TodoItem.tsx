@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { GripVertical, Circle, CircleCheck, Check } from 'lucide-react'
+import { Circle, CircleCheck, Check } from 'lucide-react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useStore } from '../../store'
@@ -20,8 +20,10 @@ export default function TodoItem({ todo, isSelected, projectArchived = false }: 
   const spanRef = useRef<HTMLSpanElement>(null)
   const { completeTodo, uncompleteTodo, deleteTodo, updateTodoText, setSelectedTodo } = useStore()
 
+  const draggable = !todo.completed && !projectArchived && !isEditing
+
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: todo.id })
+    useSortable({ id: todo.id, disabled: !draggable })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -65,7 +67,11 @@ export default function TodoItem({ todo, isSelected, projectArchived = false }: 
         ref={setNodeRef}
         style={style}
         data-testid="todo-item"
-        className={`flex items-center gap-1.5 px-2 py-1.5 cursor-pointer select-none rounded mx-1 my-0.5 text-sm ${
+        {...(draggable ? attributes : {})}
+        {...(draggable ? listeners : {})}
+        className={`flex items-center gap-1.5 px-2 py-1.5 select-none rounded mx-1 my-0.5 text-sm ${
+          draggable ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer'
+        } ${
           isSelected
             ? 'bg-slate-300 dark:bg-slate-500/50 text-slate-900 dark:text-slate-100'
             : 'hover:bg-neutral-100 dark:hover:bg-neutral-800'
@@ -127,17 +133,6 @@ export default function TodoItem({ todo, isSelected, projectArchived = false }: 
         >
           {todo.text}
         </span>
-        {!todo.completed && !projectArchived && !isEditing && (
-          <button
-            {...attributes}
-            {...listeners}
-            className="text-neutral-400 hover:text-neutral-600 dark:text-neutral-400 dark:hover:text-neutral-300 shrink-0 cursor-grab active:cursor-grabbing"
-            onClick={(e) => e.stopPropagation()}
-            tabIndex={-1}
-          >
-            <GripVertical size={14} />
-          </button>
-        )}
       </div>
 
       {menuPos && (

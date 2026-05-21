@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react'
-import { GripVertical } from 'lucide-react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useStore } from '../../store'
@@ -19,8 +18,10 @@ export default function ProjectItem({ project, isSelected }: Props) {
   const spanRef = useRef<HTMLSpanElement>(null)
   const { archiveProject, unarchiveProject, deleteProject, updateProjectName, setSelectedProject } = useStore()
 
+  const draggable = !project.archived && !isEditing
+
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: project.id })
+    useSortable({ id: project.id, disabled: !draggable })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -64,7 +65,11 @@ export default function ProjectItem({ project, isSelected }: Props) {
         ref={setNodeRef}
         style={style}
         data-testid="project-item"
-        className={`flex items-center gap-1 px-2 py-1.5 cursor-pointer select-none rounded mx-1 my-0.5 text-sm ${
+        {...(draggable ? attributes : {})}
+        {...(draggable ? listeners : {})}
+        className={`flex items-center gap-1 px-2 py-1.5 select-none rounded mx-1 my-0.5 text-sm ${
+          draggable ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer'
+        } ${
           isSelected
             ? 'bg-slate-300 dark:bg-slate-500/50 text-slate-900 dark:text-slate-100'
             : 'hover:bg-neutral-100 dark:hover:bg-neutral-800'
@@ -95,17 +100,6 @@ export default function ProjectItem({ project, isSelected }: Props) {
         >
           {project.name}
         </span>
-        {!project.archived && !isEditing && (
-          <button
-            {...attributes}
-            {...listeners}
-            className="text-neutral-400 hover:text-neutral-600 dark:text-neutral-400 dark:hover:text-neutral-300 shrink-0 cursor-grab active:cursor-grabbing"
-            onClick={(e) => e.stopPropagation()}
-            tabIndex={-1}
-          >
-            <GripVertical size={14} />
-          </button>
-        )}
       </div>
 
       {menuPos && (
