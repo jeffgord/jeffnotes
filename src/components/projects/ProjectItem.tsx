@@ -77,6 +77,7 @@ export default function ProjectItem({ project, isSelected }: Props) {
         onClick={() => { if (!isEditing) setSelectedProject(isSelected ? null : project.id) }}
         onContextMenu={(e) => {
           e.preventDefault()
+          setSelectedProject(project.id)
           setMenuPos({ x: e.clientX, y: e.clientY })
         }}
       >

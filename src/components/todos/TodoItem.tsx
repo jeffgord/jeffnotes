@@ -82,6 +82,7 @@ export default function TodoItem({ todo, isSelected, projectArchived = false }: 
             ? undefined
             : (e) => {
                 e.preventDefault()
+                setSelectedTodo(todo.id)
                 setMenuPos({ x: e.clientX, y: e.clientY })
               }
         }

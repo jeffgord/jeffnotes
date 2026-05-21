@@ -36,7 +36,7 @@ export default function ContextMenu({ x, y, items, onClose }: Props) {
       ref={ref}
       data-testid="context-menu"
       style={{ top: y, left: x }}
-      className="fixed z-50 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded shadow-lg py-1 min-w-[140px]"
+      className="fixed z-50 bg-white dark:bg-neutral-900 border border-slate-400 dark:border-slate-600 rounded shadow-md py-1 w-36"
     >
       {items.map((item) => (
         <button
@@ -46,10 +46,10 @@ export default function ContextMenu({ x, y, items, onClose }: Props) {
             item.onClick()
             onClose()
           }}
-          className={`w-full text-left px-3 py-1.5 text-sm transition-colors cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-700 ${
+          className={`w-full text-left px-3 py-1 text-xs transition-colors cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-800 ${
             item.danger
-              ? 'text-red-600 dark:text-red-400'
-              : 'text-neutral-700 dark:text-neutral-200'
+              ? 'text-red-500 dark:text-red-400'
+              : 'text-neutral-500 dark:text-neutral-400'
           }`}
         >
           {item.label}
