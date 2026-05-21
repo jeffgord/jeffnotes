@@ -25,6 +25,12 @@ describe('Project actions', () => {
     expect(projects[0].order).toBe(0)
   })
 
+  it('selects the new project after adding', () => {
+    store.getState().addProject('Work')
+    const { projects, selectedProjectId } = store.getState()
+    expect(selectedProjectId).toBe(projects[0].id)
+  })
+
   it('adds multiple projects with newest at top', () => {
     store.getState().addProject('A')
     store.getState().addProject('B')
@@ -119,6 +125,12 @@ describe('Todo actions', () => {
     expect(todos[0].text).toBe('Fix bug')
     expect(todos[0].completed).toBe(false)
     expect(todos[0].projectId).toBe(projectId)
+  })
+
+  it('selects the new todo after adding', () => {
+    store.getState().addTodo(projectId, 'Fix bug')
+    const { todos, selectedTodoId } = store.getState()
+    expect(selectedTodoId).toBe(todos[0].id)
   })
 
   it('completes a todo', () => {

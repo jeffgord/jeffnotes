@@ -35,11 +35,14 @@ export const buildStoreState: StateCreator<AppStore> = (set, get) => ({
   hideCompletedTodos: false,
 
   addProject: (name) => {
+    const id = nanoid()
     set((s) => ({
       projects: [
-        { id: nanoid(), name: name.trim(), order: 0, archived: false, notes: '', createdAt: Date.now() },
+        { id, name: name.trim(), order: 0, archived: false, notes: '', createdAt: Date.now() },
         ...s.projects.map((p: Project) => ({ ...p, order: p.order + 1 })),
       ],
+      selectedProjectId: id,
+      selectedTodoId: null,
     }))
   },
 
@@ -102,13 +105,15 @@ export const buildStoreState: StateCreator<AppStore> = (set, get) => ({
     set({ selectedProjectId: id, selectedTodoId: null }),
 
   addTodo: (projectId, text) => {
+    const id = nanoid()
     set((s) => ({
       todos: [
-        { id: nanoid(), projectId, text: text.trim(), order: 0, completed: false, notes: '', createdAt: Date.now() },
+        { id, projectId, text: text.trim(), order: 0, completed: false, notes: '', createdAt: Date.now() },
         ...s.todos.map((t: Todo) =>
           t.projectId === projectId ? { ...t, order: t.order + 1 } : t
         ),
       ],
+      selectedTodoId: id,
     }))
   },
 
