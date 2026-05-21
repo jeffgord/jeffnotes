@@ -119,7 +119,7 @@ export default function TodoItem({ todo, isSelected, projectArchived = false }: 
           data-testid={isEditing ? 'rename-input' : undefined}
           contentEditable={isEditing ? true : undefined}
           suppressContentEditableWarning
-          className={`flex-1 truncate ${todo.completed ? 'line-through text-neutral-400 dark:text-neutral-500' : ''} ${isEditing ? 'outline-none cursor-text' : ''}`}
+          className={`flex-1 break-words min-w-0 ${todo.completed ? 'line-through text-neutral-400 dark:text-neutral-500' : ''} ${isEditing ? 'outline-none cursor-text' : ''}`}
           onClick={(e) => { e.stopPropagation(); if (!isEditing) setSelectedTodo(todo.id) }}
           onDoubleClick={projectArchived ? undefined : (e) => { e.stopPropagation(); if (!isEditing) startEditing() }}
           onKeyDown={(e) => {

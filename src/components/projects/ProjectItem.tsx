@@ -85,7 +85,7 @@ export default function ProjectItem({ project, isSelected }: Props) {
           data-testid={isEditing ? 'rename-input' : undefined}
           contentEditable={isEditing ? true : undefined}
           suppressContentEditableWarning
-          className={`flex-1 truncate ${project.archived ? 'line-through text-neutral-400 dark:text-neutral-500' : ''} ${isEditing ? 'outline-none cursor-text' : ''}`}
+          className={`flex-1 break-words min-w-0 ${project.archived ? 'line-through text-neutral-400 dark:text-neutral-500' : ''} ${isEditing ? 'outline-none cursor-text' : ''}`}
           onClick={(e) => { e.stopPropagation(); if (!isEditing) setSelectedProject(project.id) }}
           onDoubleClick={(e) => { e.stopPropagation(); if (!isEditing) startEditing() }}
           onKeyDown={(e) => {
