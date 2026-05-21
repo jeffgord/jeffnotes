@@ -10,7 +10,8 @@
       "Bash(npx tsc *)",
       "Bash(npx playwright *)",
       "Bash(node *)",
-      "Bash(curl *)"
+      "Bash(curl *)",
+      "Bash(gh run *)"
     ]
   }
 }
