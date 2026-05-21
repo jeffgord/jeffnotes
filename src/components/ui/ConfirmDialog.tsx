@@ -18,14 +18,14 @@ export default function ConfirmDialog({ message, onConfirm, onCancel }: Props) {
         <div className="flex justify-end gap-2">
           <button
             onClick={onCancel}
-            className="px-3 py-1.5 text-xs rounded border border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+            className="px-3 py-1.5 text-xs rounded border border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button
             data-testid="confirm-delete-btn"
             onClick={onConfirm}
-            className="px-3 py-1.5 text-xs rounded bg-red-600 hover:bg-red-700 text-white transition-colors"
+            className="px-3 py-1.5 text-xs rounded bg-red-600 hover:bg-red-700 text-white transition-colors cursor-pointer"
           >
             Delete
           </button>

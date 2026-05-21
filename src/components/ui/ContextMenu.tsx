@@ -45,7 +45,7 @@ export default function ContextMenu({ x, y, items, onClose }: Props) {
             item.onClick()
             onClose()
           }}
-          className={`w-full text-left px-3 py-1.5 text-sm transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-700 ${
+          className={`w-full text-left px-3 py-1.5 text-sm transition-colors cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-700 ${
             item.danger
               ? 'text-red-600 dark:text-red-400'
               : 'text-neutral-700 dark:text-neutral-200'

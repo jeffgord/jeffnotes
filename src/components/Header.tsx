@@ -65,7 +65,7 @@ export default function Header() {
         <button
           onClick={handleExport}
           title="Export state"
-          className="flex items-center gap-1 px-2 py-1 text-xs rounded text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+          className="flex items-center gap-1 px-2 py-1 text-xs rounded text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
         >
           <Download size={14} />
           Export
@@ -73,7 +73,7 @@ export default function Header() {
         <button
           onClick={() => fileInputRef.current?.click()}
           title="Import state"
-          className="flex items-center gap-1 px-2 py-1 text-xs rounded text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+          className="flex items-center gap-1 px-2 py-1 text-xs rounded text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
         >
           <Upload size={14} />
           Import
@@ -88,7 +88,7 @@ export default function Header() {
         <button
           onClick={() => setTheme(nextTheme[theme])}
           title={`Theme: ${themeLabels[theme]}`}
-          className="flex items-center gap-1 px-2 py-1 text-xs rounded text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+          className="flex items-center gap-1 px-2 py-1 text-xs rounded text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
         >
           {themeIcons[theme]}
           <span className="inline-block w-[38px]">{themeLabels[theme]}</span>
