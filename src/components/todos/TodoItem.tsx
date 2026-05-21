@@ -88,6 +88,7 @@ export default function TodoItem({ todo, isSelected, projectArchived = false }: 
       >
         <button
           data-testid="todo-checkbox"
+          title={projectArchived ? 'Project is archived' : todo.completed ? 'Mark incomplete' : 'Mark complete'}
           onClick={
             projectArchived
               ? (e) => e.stopPropagation()

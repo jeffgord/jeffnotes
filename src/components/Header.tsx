@@ -58,8 +58,8 @@ export default function Header() {
 
   return (
     <header className="flex items-center justify-between px-4 py-2 border-b-2 border-slate-400 dark:border-slate-600 bg-white dark:bg-neutral-900 shrink-0">
-      <h1 className="text-sm font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
-        jeffnotes
+      <h1 className="text-md font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
+        <i>jeffnotes</i>
       </h1>
       <div className="flex items-center gap-2">
         <button

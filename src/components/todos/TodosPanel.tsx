@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { CheckSquare, Circle, Plus } from 'lucide-react'
+import { Eye, EyeOff, Circle, Plus } from 'lucide-react'
 import {
   DndContext,
   closestCenter,
@@ -90,11 +90,11 @@ export default function TodosPanel() {
             onClick={toggleHideCompleted}
             className={`p-1 rounded transition-colors cursor-pointer ${
               hideCompletedTodos
-                ? 'text-blue-600 dark:text-blue-400'
+                ? 'text-slate-600 dark:text-slate-400'
                 : 'text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300'
             }`}
           >
-            <CheckSquare size={14} />
+            {hideCompletedTodos ? <EyeOff size={14} /> : <Eye size={14} />}
           </button>
           <button
             title="Add todo"

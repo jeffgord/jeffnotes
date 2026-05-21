@@ -41,6 +41,7 @@ export default function ContextMenu({ x, y, items, onClose }: Props) {
       {items.map((item) => (
         <button
           key={item.label}
+          title={item.label}
           onClick={() => {
             item.onClick()
             onClose()

@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Archive, Plus } from 'lucide-react'
+import { Eye, EyeOff, Plus } from 'lucide-react'
 import {
   DndContext,
   closestCenter,
@@ -71,11 +71,11 @@ export default function ProjectsPanel() {
             onClick={toggleHideArchived}
             className={`p-1 rounded transition-colors cursor-pointer ${
               hideArchivedProjects
-                ? 'text-blue-600 dark:text-blue-400'
+                ? 'text-slate-600 dark:text-slate-400'
                 : 'text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300'
             }`}
           >
-            <Archive size={14} />
+            {hideArchivedProjects ? <EyeOff size={14} /> : <Eye size={14} />}
           </button>
           <button
             title="Add project"
