@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Archive } from 'lucide-react'
+import { Archive, Plus } from 'lucide-react'
 import {
   DndContext,
   closestCenter,
@@ -76,6 +76,13 @@ export default function ProjectsPanel() {
             }`}
           >
             <Archive size={14} />
+          </button>
+          <button
+            title="Add project"
+            onClick={startAdding}
+            className="p-1 rounded transition-colors cursor-pointer text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
+          >
+            <Plus size={14} />
           </button>
         </div>
       </div>

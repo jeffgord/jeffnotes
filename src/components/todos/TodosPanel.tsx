@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { CheckSquare, Circle } from 'lucide-react'
+import { CheckSquare, Circle, Plus } from 'lucide-react'
 import {
   DndContext,
   closestCenter,
@@ -95,6 +95,13 @@ export default function TodosPanel() {
             }`}
           >
             <CheckSquare size={14} />
+          </button>
+          <button
+            title="Add todo"
+            onClick={startAdding}
+            className="p-1 rounded transition-colors cursor-pointer text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
+          >
+            <Plus size={14} />
           </button>
         </div>
       </div>

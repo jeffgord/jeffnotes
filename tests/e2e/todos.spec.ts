@@ -72,6 +72,15 @@ test('completes and incompletes a todo via context menu', async ({ page }) => {
   await expect(page.getByText('Task')).toBeVisible()
 })
 
+test('plus button opens add input', async ({ page }) => {
+  await page.getByTitle('Add todo').click()
+  await expect(page.getByTestId('add-input')).toBeVisible()
+
+  await page.getByTestId('add-input').fill('From Plus')
+  await page.keyboard.press('Enter')
+  await expect(page.getByText('From Plus')).toBeVisible()
+})
+
 test('double-click on empty space opens add input', async ({ page }) => {
   await page.getByTestId('todos-list').dblclick()
   await expect(page.getByTestId('add-input')).toBeVisible()

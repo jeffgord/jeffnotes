@@ -25,8 +25,9 @@ test('adds a project', async ({ page }) => {
 
 test('selects a project', async ({ page }) => {
   await addProject(page, 'Work')
+  await expect(page.getByText('Select a project to view todos')).toBeVisible()
   await page.getByText('Work').click()
-  await expect(page.locator('.w-\\[280px\\]').getByText('Work')).toBeVisible()
+  await expect(page.getByText('Select a project to view todos')).not.toBeVisible()
 })
 
 test('archives and unarchives a project', async ({ page }) => {
@@ -52,6 +53,15 @@ test('archives and unarchives a project', async ({ page }) => {
   // Now hiding archived still shows it (it's no longer archived)
   await page.getByTitle('Hide archived').click()
   await expect(page.getByText('Work')).toBeVisible()
+})
+
+test('plus button opens add input', async ({ page }) => {
+  await page.getByTitle('Add project').click()
+  await expect(page.getByTestId('add-input')).toBeVisible()
+
+  await page.getByTestId('add-input').fill('From Plus')
+  await page.keyboard.press('Enter')
+  await expect(page.getByText('From Plus')).toBeVisible()
 })
 
 test('double-click on empty space opens add input', async ({ page }) => {
