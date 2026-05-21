@@ -58,7 +58,11 @@ export default function Header() {
 
   return (
     <header className="flex items-center justify-between px-4 py-2 border-b-2 border-slate-400 dark:border-slate-600 bg-white dark:bg-neutral-900 shrink-0">
-      <h1 className="text-md font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
+      <h1 className="flex items-center gap-2 text-md font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
+        <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5 shrink-0" aria-hidden="true">
+          <rect width="32" height="32" rx="6" fill="#64748b"/>
+          <polyline points="7,17 13,23 25,10" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
         <i>jeffnotes</i>
       </h1>
       <div className="flex items-center gap-2">
